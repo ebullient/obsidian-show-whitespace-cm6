@@ -1,0 +1,15 @@
+# Intellij
+*.iml
+.idea
+
+# VS Code
+.vscode
+
+# npm
+node_modules
+
+# build
+build
+
+# obsidian
+data.json

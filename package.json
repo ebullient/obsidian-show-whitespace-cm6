@@ -1,0 +1,53 @@
+{
+  "name": "show-whitespace-cm6",
+  "version": "0.1",
+  "private": true,
+  "description": "Show leading and trailing whitespace in source mode (CodeMirror6)",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "prebuild": "npm run prettier && eslint --ignore-path .gitignore src/",
+    "build": "node esbuild.config.mjs production",
+    "postbuild": "cp -v manifest.json README.md build",
+    "prettier": "prettier -w 'src/**/*.ts'",
+    "preversion": "npm run test && npm run build",
+    "version": "auto-changelog -p",
+    "brat-notes": "run() { auto-changelog --stdout --hide-credit --hide-empty-releases --template .github/changelog.hbs -v $1 --starting-version $1  > release-notes.md; }; run"
+  },
+  "keywords": [
+    "obsidian",
+    "obsidian-md",
+    "obsidian-plugin",
+    "obsidian-md-plugin"
+  ],
+  "author": "ebullient",
+  "repository": "github.com:ebullient/obsidian-show-whitespace-cm6",
+  "license": "AGPL-3.0-only",
+  "devDependencies": {
+    "@types/codemirror": "5.60.15",
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.11.0",
+    "@typescript-eslint/parser": "^6.12.0",
+    "auto-changelog": "^2.4.0",
+    "builtin-modules": "^3.3.0",
+    "dotenv": "^16.3.1",
+    "esbuild": "0.19.8",
+    "esbuild-sass-plugin": "^2.16.0",
+    "eslint": "^8.54.0",
+    "moment": "^2.29.4",
+    "obsidian": "^1.4.11",
+    "prettier": "^3.1.0",
+    "tslib": "^2.6.2",
+    "typescript": "5.2.2"
+  },
+  "dependencies": {
+    "@codemirror/language": "https://github.com/lishid/cm-language",
+    "@codemirror/state": "^6.3.1",
+    "@codemirror/view": "^6.22.1"
+  },
+  "auto-changelog": {
+    "backfillLimit": false,
+    "commitLimit": false,
+    "ignoreCommitPattern": "(🔖|🔨|🧹|changelog|release|Update README).*"
+  }
+}
