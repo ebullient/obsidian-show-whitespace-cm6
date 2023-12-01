@@ -1,0 +1,60 @@
+/*! @settings
+
+name: Show Whitespace (CM6)
+id: show-whitespace-cm6
+settings:
+  -
+    id: show-whitespace-color
+    title: Fill character color
+    description: "Set `--show-whitespace-color` in a snippet to change the color of fill characters"
+    type: info-text
+    markdown: true
+  -
+    id: nix-show-whitespace-styles
+    title: Suppress/Remove this plugin's style
+    description: Set this to true to suppress the plugin's style
+    type: class-toggle
+    default: false
+*/
+body:not(.nix-show-whitespace-styles) {
+  --show-whitespace-color: var(--color-base-35);
+
+  .markdown-source-view.mod-cm6 {
+    .HyperMD-list-line-nobullet .cm-indent {
+      min-width: unset;
+    }
+    .cm-line {
+      .cm-highlightSpace:before {
+        content: '';
+        color: var(--show-whitespace-color);
+      }
+      .cm-indent:has(.cm-highlightSpace)::before {
+        transform: unset;
+      }
+      .cm-indent,
+      .cm-trailing-space-a {
+        white-space: pre;
+        font-family: var(--font-monospace);
+        font-size: .8em;
+      }
+      .cm-indent .cm-highlightSpace:before {
+        content: '∙∙∙∙';
+        color: var(--show-whitespace-color);
+      }
+      .cm-trailing-space-a .cm-highlightSpace:before {
+        content: '∙∙';
+        color: var(--show-whitespace-color);
+      }
+      .cm-trailing-space-new-line .cm-highlightSpace:before {
+        content: ' ↲';
+        color: var(--show-whitespace-color);
+      }
+      .cm-trailingSpace {
+        background-color: transparent;
+      }
+    }
+    .cm-quote .cm-transparent {
+      color: var(--show-whitespace-color);
+    }
+  }
+}
