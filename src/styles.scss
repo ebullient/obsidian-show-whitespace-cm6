@@ -44,6 +44,7 @@ settings:
   white-space: pre;
   font-family: var(--font-monospace);
   line-height: inherit;
+  color: var(--show-whitespace-color);
 }
 
 @mixin line-ending {
