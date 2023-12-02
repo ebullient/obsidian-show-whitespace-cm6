@@ -53,7 +53,7 @@ Interested in supporting further development? Consider buying me a coffee!
 
 ## Attribution
 
-While this is a new implementation for CM6, styles and characters are based on 
+While this is a new implementation for CM6, styles and characters are inspired by behavior in VSCode and  
 the original [Show Whitespace](https://github.com/deathau/cm-show-whitespace-obsidian) plugin by [death_au](https://github.com/deathau).
 
 ## License
