@@ -49,7 +49,7 @@ Pull requests are both welcome and appreciated. 😀
 
 Interested in supporting further development? Consider buying me a coffee!
 
-[![Buy Me A Coffee](https://cdn.buymeacoffee.com/buttons/v2/default-blue.png)](https://www.buymeacoffee.com/ebullient)
+[<img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" width="200px"/>](https://www.buymeacoffee.com/ebullient)
 
 ## License
 
