@@ -1,17 +1,17 @@
 # Obsidian: Show Whitespace (CM6)
 [![GitHub tag (Latest by date)](https://img.shields.io/github/v/tag/ebullient/obsidian-show-whitespace-cm6)](https://github.com/ebullient/obsidian-show-whitespace-cm6/releases) ![GitHub all releases](https://img.shields.io/github/downloads/ebullient/obsidian-show-whitespace-cm6/total?color=success) [![CC BY-SA 4.0][cc-by-sa-shield]][cc-by-sa]
 
-"Show Whitespace (CM6)" is a streamlined Obsidian plugin designed to enhance your note-taking experience by highlighting whitespace in both Source and Live Preview modes. 
+This is a simple plugin to enable CM6 extensions to highlight whitespace in both Source and Live Preview modes. 
 
 ## Features
 
 - **Whitespace Visualization:** Displays leading and trailing whitespace in your notes.
 - **Blockquote Identification:** Highlights the leading caret for blockquotes, making them easily distinguishable.
-- **Customizable Styles:** Comes with basic CSS styling for immediate use. These styles are fully customizable for users who prefer to tweak the appearance to fit their personal theme or style.
 
-This is a simple plugin to enable CM6 extensions to highlight whitespace. 
+Basic CSS styling provided by the plugin renders characters for whitespace at the beginning and ending of lines (not in the middle) for readability. 
 
-Basic CSS styling provided by the plugin renders characters for whitespace at the beginning and ending of lines (not in the middle) for readability. It should be easy enough for you to tweak into your own snippet.
+- Set `--show-whitespace-color` in a snippet to change the color of the filler characters.
+- Copy style.css (from the release) into your own snippet, and use the Style Settings plugin to disable the styles for this plugin.
 
 ### Note: Plugin Submission Pending
 
