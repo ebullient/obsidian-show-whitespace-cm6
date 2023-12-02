@@ -51,6 +51,11 @@ Interested in supporting further development? Consider buying me a coffee!
 
 [<img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" width="200px"/>](https://www.buymeacoffee.com/ebullient)
 
+## Attribution
+
+While this is a new implementation for CM6, styles and characters are based on 
+the original [Show Whitespace](https://github.com/deathau/cm-show-whitespace-obsidian) plugin by [death_au](https://github.com/deathau).
+
 ## License
 
 This work is licensed under a [Creative Commons Attribution-ShareAlike 4.0 International License][cc-by-sa].

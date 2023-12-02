@@ -15,46 +15,151 @@ settings:
     description: Set this to true to suppress the plugin's style
     type: class-toggle
     default: false
+  -
+    id: highlight-blockquote-markers
+    title: Always show blockquote markers
+    description: Show the leading > for blockquotes in Live Preview
+    type: class-toggle
+    default: false
+  -
+    id: highlight-all-codeblock-whitespace
+    title: Highlight all whitespace characters in code blocks
+    description: Add a marker for all whitespace characters in code blocks
+    type: class-toggle
+    default: false
+  -
+    id: highlight-all-whitespace
+    title: Highlight all whitespace characters
+    description: Add a marker for all whitespace characters, even those between words
+    type: class-toggle
+    default: false
+  -
+    id: highlight-min-width-list-markers
+    title: Highlight list markers
+    description: Add a very faint underline to min-width list markers
+    type: class-toggle
+    default: false
 */
+@mixin whitespace {
+  white-space: pre;
+  font-family: var(--font-monospace);
+  line-height: inherit;
+}
+
+@mixin line-ending {
+  font-weight: var(--font-extralight);
+  font-family: var(--font-monospace);
+  line-height: inherit;
+  width: 1.2ch;
+  padding-left: 0.2ch;
+  vertical-align: middle;
+}
+@mixin all-whitespace {
+  .cm-highlightSpace:not(.cm-indent .cm-highlightSpace) {
+    @include whitespace;
+  }
+  .cm-highlightSpace:not(.cm-indent .cm-highlightSpace):not(.cm-trailingSpace .cm-highlightSpace):before {
+    content: '∙';
+  }
+}
+
 body:not(.nix-show-whitespace-styles) {
-  --show-whitespace-color: var(--color-base-35);
+  --show-whitespace-color: var(--color-base-40);
 
   .markdown-source-view.mod-cm6 {
     .HyperMD-list-line-nobullet .cm-indent {
       min-width: unset;
     }
+
+    &.is-live-preview .HyperMD-quote:before,
+    .cm-blockquote-border:before {
+      border-left: none;
+      border-right: var(--blockquote-border-thickness) solid var(--blockquote-border-color);
+    }
+
     .cm-line {
       .cm-highlightSpace:before {
-        content: '';
         color: var(--show-whitespace-color);
       }
       .cm-indent:has(.cm-highlightSpace)::before {
         transform: unset;
       }
       .cm-indent,
-      .cm-trailing-space-a {
-        white-space: pre;
-        font-family: var(--font-monospace);
-        font-size: .8em;
+      .cm-trailingSpace {
+        @include whitespace;
       }
-      .cm-indent .cm-highlightSpace:before {
-        content: '∙∙∙∙';
+      .cm-indent .cm-highlightSpace[data-display$="····"]:before {
+        content: '····';
+      }
+      &:has(span):not(:has(.cm-trailing-space-new-line)):not(:has(.cm-trailingSpace)):after {
         color: var(--show-whitespace-color);
+        content: '¬';
+        padding-left: 0.2ch;
+        @include line-ending;
       }
       .cm-trailing-space-a .cm-highlightSpace:before {
-        content: '∙∙';
-        color: var(--show-whitespace-color);
+        content: attr(data-display);
       }
-      .cm-trailing-space-new-line .cm-highlightSpace:before {
-        content: ' ↲';
-        color: var(--show-whitespace-color);
+      .cm-hmd-codeblock:last-child,
+      .cm-trailing-space-new-line {
+        .cm-trailingSpace:has(.cm-highlightSpace[data-display$="··"]) {
+          // stuff
+          .cm-highlightSpace:not(.cm-hmd-codeblock .cm-trailingSpace .cm-highlightSpace):before {
+            content: '';
+          }
+          .cm-highlightSpace:after {
+            content: '↲';
+            @include line-ending;
+          }
+        }
       }
       .cm-trailingSpace {
         background-color: transparent;
       }
     }
-    .cm-quote .cm-transparent {
+  }
+}
+
+body:not(.nix-show-whitespace-styles).highlight-blockquote-markers {
+  .markdown-source-view.mod-cm6 {
+    .HyperMD-quote .cm-transparent {
       color: var(--show-whitespace-color);
+    }
+  }
+}
+
+body:not(.nix-show-whitespace-styles):not(.highlight-all-whitespace).highlight-all-codeblock-whitespace {
+  .markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock {
+    @include all-whitespace;
+
+    .cm-highlightSpace:not(.cm-indent .cm-highlightSpace):not(.cm-trailingSpace .cm-highlightSpace):before {
+      content: attr(data-display);
+    }
+  }
+}
+
+body:not(.nix-show-whitespace-styles).highlight-all-whitespace {
+  .markdown-source-view.mod-cm6 .cm-line {
+    @include all-whitespace;
+  }
+}
+
+body:not(.nix-show-whitespace-styles):not(.highlight-all-whitespace):not(.highlight-all-codeblock-whitespace) {
+  .markdown-source-view.mod-cm6 .cm-line {
+    .cm-highlightSpace:not(.cm-indent .cm-highlightSpace):not(.cm-trailingSpace .cm-highlightSpace):before {
+      content: '';
+    }
+  }
+}
+
+body:not(.nix-show-whitespace-styles).highlight-min-width-list-markers {
+  .markdown-source-view.mod-cm6 {
+    .cm-line {
+      .cm-formatting-list-ul,
+      .cm-formatting-list-ol,
+      .task-list-label {
+        border-bottom: 1px dotted var(--show-whitespace-color);
+      }
     }
   }
 }
