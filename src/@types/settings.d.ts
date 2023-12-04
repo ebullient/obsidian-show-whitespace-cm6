@@ -15,7 +15,7 @@ export interface SWSettings {
 
 declare module "obsidian" {
     interface Plugin {
-      onConfigFileChange: () => void;
-      handleConfigFileChange(): Promise<void>;
+        onConfigFileChange: () => void;
+        handleConfigFileChange(): Promise<void>;
     }
-  }
+}

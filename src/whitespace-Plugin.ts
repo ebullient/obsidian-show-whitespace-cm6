@@ -77,11 +77,15 @@ export class ShowWhitespacePlugin extends Plugin {
         this.onExternalSettingsChange();
     }
 
-    public onExternalSettingsChange = debounce(async () => {
+    public onExternalSettingsChange = debounce(
+        async () => {
             this.removeClasses();
             this.initClasses();
             console.debug("(SW-CM6) external settings changed");
-        }, 2000, true);
+        },
+        2000,
+        true,
+    );
 
     async loadSettings(): Promise<void> {
         if (!this.settings) {
