@@ -10,8 +10,14 @@ This is a simple plugin to enable CM6 extensions to highlight whitespace in both
 
 Basic CSS styling provided by the plugin renders characters for whitespace at the beginning and ending of lines (not in the middle) for readability. 
 
-- Set `--show-whitespace-color` in a snippet to change the color of the filler characters.
-- Copy style.css (from the release) into your own snippet, and use the Style Settings plugin to disable the styles for this plugin.
+## Look / Feel options
+
+1. Use the **Style settings plugin** to toggle additional CSS styles on and off
+2. **Use your own snippet**:
+    - Set `--show-whitespace-color` to change the color of the filler characters
+    - Copy style.css (from the release) and fully customize how things are rendered
+
+## Installation
 
 ### Note: Plugin Submission Pending
 
