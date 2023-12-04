@@ -1,4 +1,4 @@
-import { Plugin } from "obsidian";
+import { Plugin, debounce } from "obsidian";
 import {
     highlightTrailingWhitespace,
     highlightWhitespace,
@@ -67,10 +67,21 @@ export class ShowWhitespacePlugin extends Plugin {
     }
 
     onunload(): void {
-        console.log("unloading Show Whitespace (SW-CM6)");
+        console.log("(SW-CM6) unloading Show Whitespace");
         document.body.classList.add(this.manifest.id);
         this.removeClasses();
     }
+
+    async handleConfigFileChange() {
+        await super.handleConfigFileChange();
+        this.onExternalSettingsChange();
+    }
+
+    public onExternalSettingsChange = debounce(async () => {
+            this.removeClasses();
+            this.initClasses();
+            console.debug("(SW-CM6) external settings changed");
+        }, 2000, true);
 
     async loadSettings(): Promise<void> {
         if (!this.settings) {
@@ -89,13 +100,13 @@ export class ShowWhitespacePlugin extends Plugin {
     async updateSettings(newSettings: SWSettings): Promise<void> {
         this.settings = Object.assign({}, this.settings, newSettings);
         await this.saveSettings();
+        this.removeClasses();
+        this.initClasses();
+        console.log("(SW-CM6) settings and classes updated");
     }
 
     async saveSettings(): Promise<void> {
-        console.debug("(SW-CM6): saving settings");
         await this.saveData(this.settings);
-        this.removeClasses();
-        this.initClasses();
     }
 }
 

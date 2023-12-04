@@ -12,3 +12,10 @@ export interface SWSettings {
     showAllWhitespace: boolean;
     outlineListMarkers: boolean;
 }
+
+declare module "obsidian" {
+    interface Plugin {
+      onConfigFileChange: () => void;
+      handleConfigFileChange(): Promise<void>;
+    }
+  }
