@@ -1,45 +1,3 @@
-/*! @settings
-
-name: Show Whitespace (CM6)
-id: show-whitespace-cm6
-settings:
-  -
-    id: show-whitespace-color
-    title: Fill character color
-    description: "Set `--show-whitespace-color` in a snippet to change the color of fill characters"
-    type: info-text
-    markdown: true
-  -
-    id: nix-show-whitespace-styles
-    title: Suppress/Remove this plugin's style
-    description: Set this to true to suppress the plugin's style
-    type: class-toggle
-    default: false
-  -
-    id: highlight-blockquote-markers
-    title: Always show blockquote markers
-    description: Show the leading > for blockquotes in Live Preview
-    type: class-toggle
-    default: false
-  -
-    id: highlight-all-codeblock-whitespace
-    title: Highlight all whitespace characters in code blocks
-    description: Add a marker for all whitespace characters in code blocks
-    type: class-toggle
-    default: false
-  -
-    id: highlight-all-whitespace
-    title: Highlight all whitespace characters
-    description: Add a marker for all whitespace characters, even those between words
-    type: class-toggle
-    default: false
-  -
-    id: highlight-min-width-list-markers
-    title: Highlight list markers
-    description: Add a very faint underline to min-width list markers
-    type: class-toggle
-    default: false
-*/
 @mixin whitespace {
   white-space: pre;
   font-family: var(--font-monospace);
@@ -63,8 +21,14 @@ settings:
     content: '∙';
   }
 }
+.theme-dark {
+  --swcm6-outline-list-markers-color: rgba(var(--mono-rgb-100), 0.05);
+}
+.theme-light {
+  --swcm6-outline-list-markers-color: rgba(var(--mono-rgb-100), 0.03);
+}
 
-body:not(.nix-show-whitespace-styles) {
+body:not(.swcm6-nix-plugin-styles) {
   --show-whitespace-color: var(--color-base-40);
 
   .markdown-source-view.mod-cm6 {
@@ -121,7 +85,7 @@ body:not(.nix-show-whitespace-styles) {
   }
 }
 
-body:not(.nix-show-whitespace-styles).highlight-blockquote-markers {
+body:not(.swcm6-nix-plugin-styles).swcm6-show-blockquote-markers {
   .markdown-source-view.mod-cm6 {
     .HyperMD-quote .cm-transparent {
       color: var(--show-whitespace-color);
@@ -129,7 +93,7 @@ body:not(.nix-show-whitespace-styles).highlight-blockquote-markers {
   }
 }
 
-body:not(.nix-show-whitespace-styles):not(.highlight-all-whitespace).highlight-all-codeblock-whitespace {
+body:not(.swcm6-nix-plugin-styles):not(.swcm6-show-all-whitespace).swcm6-show-codeblock-whitespace {
   .markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock {
     @include all-whitespace;
 
@@ -139,13 +103,13 @@ body:not(.nix-show-whitespace-styles):not(.highlight-all-whitespace).highlight-a
   }
 }
 
-body:not(.nix-show-whitespace-styles).highlight-all-whitespace {
+body:not(.swcm6-nix-plugin-styles).swcm6-show-all-whitespace {
   .markdown-source-view.mod-cm6 .cm-line {
     @include all-whitespace;
   }
 }
 
-body:not(.nix-show-whitespace-styles):not(.highlight-all-whitespace):not(.highlight-all-codeblock-whitespace) {
+body:not(.swcm6-nix-plugin-styles):not(.swcm6-show-all-whitespace):not(.swcm6-show-codeblock-whitespace) {
   .markdown-source-view.mod-cm6 .cm-line {
     .cm-highlightSpace:not(.cm-indent .cm-highlightSpace):not(.cm-trailingSpace .cm-highlightSpace):before {
       content: '';
@@ -153,13 +117,13 @@ body:not(.nix-show-whitespace-styles):not(.highlight-all-whitespace):not(.highli
   }
 }
 
-body:not(.nix-show-whitespace-styles).highlight-min-width-list-markers {
+body:not(.swcm6-nix-plugin-styles).swcm6-outline-list-markers {
   .markdown-source-view.mod-cm6 {
     .cm-line {
       .cm-formatting-list-ul,
       .cm-formatting-list-ol,
       .task-list-label {
-        border-bottom: 1px dotted var(--show-whitespace-color);
+        background-color: var(--swcm6-outline-list-markers-color);
       }
     }
   }

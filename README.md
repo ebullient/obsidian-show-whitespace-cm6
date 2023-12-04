@@ -12,10 +12,12 @@ Basic CSS styling provided by the plugin renders characters for whitespace at th
 
 ## Look / Feel options
 
-1. Use the **Style settings plugin** to toggle additional CSS styles on and off
-2. **Use your own snippet**:
-    - Set `--show-whitespace-color` to change the color of the filler characters
-    - Copy style.css (from the release) and fully customize how things are rendered
+The plugin provides a few options to customize the look and feel of whitespace characters.
+
+You can also completely disable the plugin's CSS and use your own.
+1. Use the plugin setting to disable registration of style.css (this functions as a style settings plugin would)
+2. Copy the plugin `style.css` into your own CSS snippet
+3. Update styles as desired.
 
 ## Installation
 
