@@ -92,7 +92,18 @@ body:not(.swcm6-nix-plugin-styles).swcm6-show-blockquote-markers {
     }
   }
 }
-
+body:not(.swcm6-nix-plugin-styles).swcm6-show-all-whitespace {
+  .markdown-source-view.mod-cm6 .cm-line {
+    @include all-whitespace;
+  }
+}
+body:not(.swcm6-nix-plugin-styles):not(.swcm6-show-all-whitespace) {
+  .markdown-source-view.mod-cm6 .cm-line {
+    .cm-highlightSpace:not(.cm-indent .cm-highlightSpace):not(.cm-trailingSpace .cm-highlightSpace):before {
+      content: '';
+    }
+  }
+}
 body:not(.swcm6-nix-plugin-styles):not(.swcm6-show-all-whitespace).swcm6-show-codeblock-whitespace {
   .markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock {
     @include all-whitespace;
@@ -102,21 +113,6 @@ body:not(.swcm6-nix-plugin-styles):not(.swcm6-show-all-whitespace).swcm6-show-co
     }
   }
 }
-
-body:not(.swcm6-nix-plugin-styles).swcm6-show-all-whitespace {
-  .markdown-source-view.mod-cm6 .cm-line {
-    @include all-whitespace;
-  }
-}
-
-body:not(.swcm6-nix-plugin-styles):not(.swcm6-show-all-whitespace):not(.swcm6-show-codeblock-whitespace) {
-  .markdown-source-view.mod-cm6 .cm-line {
-    .cm-highlightSpace:not(.cm-indent .cm-highlightSpace):not(.cm-trailingSpace .cm-highlightSpace):before {
-      content: '';
-    }
-  }
-}
-
 body:not(.swcm6-nix-plugin-styles).swcm6-outline-list-markers {
   .markdown-source-view.mod-cm6 {
     .cm-line {
