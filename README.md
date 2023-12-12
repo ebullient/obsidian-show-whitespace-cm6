@@ -1,7 +1,7 @@
-# Obsidian: Show Whitespace (CM6)
+# Obsidian: Show Whitespace
 [![GitHub tag (Latest by date)](https://img.shields.io/github/v/tag/ebullient/obsidian-show-whitespace-cm6)](https://github.com/ebullient/obsidian-show-whitespace-cm6/releases) ![GitHub all releases](https://img.shields.io/github/downloads/ebullient/obsidian-show-whitespace-cm6/total?color=success) [![CC BY-SA 4.0][cc-by-sa-shield]][cc-by-sa]
 
-This is a simple plugin to enable CM6 extensions to highlight whitespace in both Source and Live Preview modes. 
+This is a simple plugin to enable CodeMirror 6 extensions to highlight whitespace in both Source and Live Preview modes. 
 
 ## Features
 
@@ -29,7 +29,7 @@ _This plugin has not yet been submitted to the Obsidian Community Plugins list._
 To install once available:
 1. Open `Settings` -> `Community Plugins`
 2. Disable safe mode
-3. **Browse** and search for "Show Whitespace (CM6)"
+3. **Browse** and search for "Show Whitespace"
 4. Click install
 5. Use the toggle on the community plugins tab to enable the plugin.
 -->
