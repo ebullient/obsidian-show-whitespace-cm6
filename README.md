@@ -21,18 +21,12 @@ You can also completely disable the plugin's CSS and use your own.
 
 ## Installation
 
-### Note: Plugin Submission Pending
-
-_This plugin has not yet been submitted to the Obsidian Community Plugins list._
-
-<!--
-To install once available:
+To install:
 1. Open `Settings` -> `Community Plugins`
 2. Disable safe mode
 3. **Browse** and search for "Show Whitespace"
 4. Click install
 5. Use the toggle on the community plugins tab to enable the plugin.
--->
 
 ### Preview with Beta Reviewers Auto-update Tester (BRAT)
 
