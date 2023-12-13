@@ -7,6 +7,7 @@ This is a simple plugin to enable CodeMirror 6 extensions to highlight whitespac
 
 - **Whitespace Visualization:** Displays leading and trailing whitespace in your notes.
 - **Blockquote Identification:** Highlights the leading caret for blockquotes, making them easily distinguishable.
+- **List marker whitespace:** Slight background applied to whitespace assigned to list markers (bullets or numbers)
 
 Basic CSS styling provided by the plugin renders characters for whitespace at the beginning and ending of lines (not in the middle) for readability. 
 
