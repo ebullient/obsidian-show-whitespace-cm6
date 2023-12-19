@@ -33,7 +33,7 @@
     "dotenv": "^16.3.1",
     "esbuild": "0.19.9",
     "esbuild-sass-plugin": "^2.16.1",
-    "eslint": "^8.54.0",
+    "eslint": "^8.56.0",
     "moment": "^2.29.4",
     "obsidian": "^1.4.11",
     "prettier": "^3.1.1",
