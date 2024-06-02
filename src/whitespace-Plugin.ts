@@ -51,7 +51,7 @@ export class ShowWhitespacePlugin extends Plugin {
     }
 
     handleExtension(onload: boolean): void {
-        console.log(this.classList);
+        console.log("(SW-CM6) enabled", this.settings.enabled);
         this.removeClasses();
         this.cmExtension.length = 0;
         if (this.settings.enabled) {

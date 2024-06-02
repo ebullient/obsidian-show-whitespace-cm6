@@ -58,6 +58,8 @@ body:not(.swcm6-nix-plugin-styles) {
       .cm-indent .cm-highlightSpace[data-display$="····"]:before {
         content: '····';
       }
+      &:has(br):not(:has(span)):before,
+      &:not(:has(br)):not(:has(span)):after,
       &:has(span):not(:has(.cm-trailing-space-new-line)):not(:has(.cm-trailingSpace)):after {
         color: var(--show-whitespace-color);
         content: '¬';
