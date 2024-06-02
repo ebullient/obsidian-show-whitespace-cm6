@@ -1,4 +1,4 @@
-import { Plugin, debounce } from "obsidian";
+import { Command, Plugin, debounce } from "obsidian";
 import {
     highlightTrailingWhitespace,
     highlightWhitespace,
@@ -18,6 +18,7 @@ export const DEFAULT_SETTINGS: SWSettings = {
     showCodeblockWhitespace: false,
     showAllWhitespace: false,
     outlineListMarkers: false,
+    enabled: true,
 };
 
 export class ShowWhitespacePlugin extends Plugin {
@@ -37,9 +38,30 @@ export class ShowWhitespacePlugin extends Plugin {
         document.body.classList.add(this.manifest.id);
         this.initClasses();
 
-        this.cmExtension.push(highlightWhitespace());
-        this.cmExtension.push(highlightTrailingWhitespace());
         this.registerEditorExtension(this.cmExtension);
+        this.handleExtension(true);
+
+        const markToggle: Command = {
+            id: "whitespace-toggle",
+            name: "Toggle Show Whitespace",
+            icon: "pilcrow",
+            callback: async () => this.toggleExtension(this),
+        };
+        this.addCommand(markToggle);
+    }
+
+    handleExtension(onload: boolean): void {
+        console.log(this.classList);
+        this.removeClasses();
+        this.cmExtension.length = 0;
+        if (this.settings.enabled) {
+            this.cmExtension.push(highlightWhitespace());
+            this.cmExtension.push(highlightTrailingWhitespace());
+            this.initClasses();
+        }
+        if (!onload) {
+            this.app.workspace.updateOptions();
+        }
     }
 
     initClasses(): void {
@@ -59,11 +81,11 @@ export class ShowWhitespacePlugin extends Plugin {
         if (this.settings.outlineListMarkers) {
             this.classList.push("swcm6-outline-list-markers");
         }
-        document.body.classList.add(...this.classList);
+        document.body.addClasses(this.classList);
     }
 
     removeClasses(): void {
-        document.body.classList.remove(...this.classList);
+        document.body.removeClasses(this.classList);
     }
 
     onunload(): void {
@@ -84,13 +106,17 @@ export class ShowWhitespacePlugin extends Plugin {
                 this.settings,
                 await this.loadData(),
             );
-            this.removeClasses();
-            this.initClasses();
+            this.updateSettings(this.settings);
             console.debug("(SW-CM6) external settings changed");
         },
         2000,
         true,
     );
+
+    async toggleExtension(plugin: ShowWhitespacePlugin): Promise<void> {
+        plugin.settings.enabled = !plugin.settings.enabled;
+        plugin.updateSettings(this.settings);
+    }
 
     async loadSettings(): Promise<void> {
         if (!this.settings) {
@@ -109,8 +135,7 @@ export class ShowWhitespacePlugin extends Plugin {
     async updateSettings(newSettings: SWSettings): Promise<void> {
         this.settings = Object.assign({}, this.settings, newSettings);
         await this.saveSettings();
-        this.removeClasses();
-        this.initClasses();
+        this.handleExtension(false);
         console.log("(SW-CM6) settings and classes updated");
     }
 

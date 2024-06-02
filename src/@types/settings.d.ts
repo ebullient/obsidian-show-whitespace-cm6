@@ -11,6 +11,7 @@ export interface SWSettings {
     showCodeblockWhitespace: boolean;
     showAllWhitespace: boolean;
     outlineListMarkers: boolean;
+    enabled: boolean;
 }
 
 declare module "obsidian" {
