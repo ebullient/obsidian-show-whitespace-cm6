@@ -53,11 +53,11 @@ export class ShowWhitespacePlugin extends Plugin {
     handleExtension(onload: boolean): void {
         console.log("(SW-CM6) enabled", this.settings.enabled);
         this.removeClasses();
+        this.initClasses();
         this.cmExtension.length = 0;
         if (this.settings.enabled) {
             this.cmExtension.push(highlightWhitespace());
             this.cmExtension.push(highlightTrailingWhitespace());
-            this.initClasses();
         }
         if (!onload) {
             this.app.workspace.updateOptions();
@@ -66,20 +66,22 @@ export class ShowWhitespacePlugin extends Plugin {
 
     initClasses(): void {
         this.classList = [];
-        if (this.settings.disablePluginStyles) {
+        if (!this.settings.enabled || this.settings.disablePluginStyles) {
             this.classList.push("swcm6-nix-plugin-styles");
         }
-        if (this.settings.showBlockquoteMarkers) {
-            this.classList.push("swcm6-show-blockquote-markers");
-        }
-        if (this.settings.showCodeblockWhitespace) {
-            this.classList.push("swcm6-show-codeblock-whitespace");
-        }
-        if (this.settings.showAllWhitespace) {
-            this.classList.push("swcm6-show-all-whitespace");
-        }
-        if (this.settings.outlineListMarkers) {
-            this.classList.push("swcm6-outline-list-markers");
+        if (this.settings.enabled) {
+            if (this.settings.showBlockquoteMarkers) {
+                this.classList.push("swcm6-show-blockquote-markers");
+            }
+            if (this.settings.showCodeblockWhitespace) {
+                this.classList.push("swcm6-show-codeblock-whitespace");
+            }
+            if (this.settings.showAllWhitespace) {
+                this.classList.push("swcm6-show-all-whitespace");
+            }
+            if (this.settings.outlineListMarkers) {
+                this.classList.push("swcm6-outline-list-markers");
+            }
         }
         document.body.addClasses(this.classList);
     }
