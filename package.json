@@ -1,6 +1,6 @@
 {
   "name": "show-whitespace-cm6",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "private": true,
   "description": "Show leading and trailing whitespace in source mode (CodeMirror6)",
   "main": "main.js",
