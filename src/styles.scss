@@ -66,10 +66,7 @@ body:not(.swcm6-nix-plugin-styles) {
         padding-left: 0.2ch;
         @include line-ending;
       }
-      .cm-trailing-space-a .cm-highlightSpace:before {
-        content: attr(data-display);
-        @include before;
-      }
+      .cm-trailing-space-a .cm-highlightSpace:before,
       .cm-trailingSpace .cm-highlightSpace:before {
         content: attr(data-display);
         @include before;
