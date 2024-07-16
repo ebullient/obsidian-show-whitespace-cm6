@@ -112,6 +112,25 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
             );
 
         new Setting(this.containerEl)
+            .setName("Show consecutive whitespace")
+            .setDesc(
+                "Add markers for multiple whitespace characters between words",
+            )
+            .addToggle((toggle) =>
+                toggle
+                    .setValue(this.newSettings.showExtraWhitespace)
+                    .onChange(async (value) => {
+                        value = value || this.newSettings.showAllWhitespace;
+                        const redraw =
+                            value != this.newSettings.showExtraWhitespace;
+                        this.newSettings.showExtraWhitespace = value;
+                        if (redraw) {
+                            this.drawElements();
+                        }
+                    }),
+            );
+
+        new Setting(this.containerEl)
             .setName("Show all whitespace characters")
             .setDesc(
                 "Add a marker for all whitespace characters, even those between words",
@@ -132,7 +151,7 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
         new Setting(this.containerEl)
             .setName("Outline list markers")
             .setDesc(
-                "Add a style to space reserved by list markers (e.g. ' -' or ' 1.')",
+                "Add a style to the space reserved by list markers (e.g. ' -' or ' 1.')",
             )
             .addToggle((toggle) =>
                 toggle

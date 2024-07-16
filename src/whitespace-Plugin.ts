@@ -76,6 +76,9 @@ export class ShowWhitespacePlugin extends Plugin {
             if (this.settings.showCodeblockWhitespace) {
                 this.classList.push("swcm6-show-codeblock-whitespace");
             }
+            if (this.settings.showExtraWhitespace) {
+                this.classList.push("swcm6-show-extra-whitespace");
+            }
             if (this.settings.showAllWhitespace) {
                 this.classList.push("swcm6-show-all-whitespace");
             }

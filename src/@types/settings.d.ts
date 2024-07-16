@@ -8,6 +8,7 @@ export interface SWSettings {
     version: SWVersion;
     disablePluginStyles: boolean;
     showBlockquoteMarkers: boolean;
+    showExtraWhitespace: boolean;
     showCodeblockWhitespace: boolean;
     showAllWhitespace: boolean;
     outlineListMarkers: boolean;

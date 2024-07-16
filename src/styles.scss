@@ -15,12 +15,11 @@
   vertical-align: middle;
 }
 @mixin all-whitespace {
-  .cm-highlightSpace:not(.cm-indent .cm-highlightSpace) {
+  .cm-highlightSpace {
     @include whitespace;
-  }
-  .cm-highlightSpace:not(.cm-indent .cm-highlightSpace):not(.cm-trailingSpace .cm-highlightSpace):before {
-    content: '∙';
-    @include before;
+    &:before {
+      @include before;
+    }
   }
 }
 .theme-dark {
@@ -32,6 +31,7 @@
 
 body:not(.swcm6-nix-plugin-styles) {
   --show-whitespace-color: var(--color-base-40);
+  --indentation-guide-editing-indent: 0;
 
   .markdown-source-view.mod-cm6 {
     .HyperMD-list-line-nobullet .cm-indent {
@@ -48,16 +48,24 @@ body:not(.swcm6-nix-plugin-styles) {
       .cm-highlightSpace:before {
         color: var(--show-whitespace-color);
       }
+      // Leading whitespace
+      .cm-indent-spacing:has(.cm-highlightSpace)::before,
       .cm-indent:has(.cm-highlightSpace)::before {
         transform: unset;
       }
-      .cm-indent,
-      .cm-trailingSpace {
-        @include whitespace;
+      .cm-indent {
+        display: inline-flex;
       }
-      .cm-indent .cm-highlightSpace[data-display$="····"]:before {
-        content: '····';
+
+      // multiple cm-indent or cm-indent-spacing elements will be
+      // present if a line is indented, all will have the same data-display value.
+      // show only the first, as they otherwise overlap
+      .cm-indent:not(:first-child) .cm-highlightSpace::before,
+      .cm-indent-spacing:not(:first-child) .cm-highlightSpace::before {
+        content: '';
       }
+
+      // Trailing whitespace
       &:has(br):not(:has(span)):before,
       &:not(:has(br)):not(:has(span)):after,
       &:has(span):not(:has(.cm-trailing-space-new-line)):not(:has(.cm-trailingSpace)):after {
@@ -88,44 +96,64 @@ body:not(.swcm6-nix-plugin-styles) {
       }
     }
   }
-}
 
-body:not(.swcm6-nix-plugin-styles).swcm6-show-blockquote-markers {
-  .markdown-source-view.mod-cm6 {
-    .HyperMD-quote .cm-transparent {
-      color: var(--show-whitespace-color);
+  // If we should always show blockquote markers
+  &.swcm6-show-blockquote-markers {
+    .markdown-source-view.mod-cm6 {
+      .HyperMD-quote .cm-transparent {
+        color: var(--show-whitespace-color);
+      }
     }
   }
-}
-body:not(.swcm6-nix-plugin-styles).swcm6-show-all-whitespace {
-  .markdown-source-view.mod-cm6 .cm-line {
-    @include all-whitespace;
-  }
-}
-body:not(.swcm6-nix-plugin-styles):not(.swcm6-show-all-whitespace) {
-  .markdown-source-view.mod-cm6 .cm-line {
-    .cm-highlightSpace:not(.cm-indent .cm-highlightSpace):not(.cm-trailingSpace .cm-highlightSpace):before {
-      content: '';
-    }
-  }
-}
-body:not(.swcm6-nix-plugin-styles):not(.swcm6-show-all-whitespace).swcm6-show-codeblock-whitespace {
-  .markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock {
-    @include all-whitespace;
 
-    .cm-highlightSpace:not(.cm-indent .cm-highlightSpace):not(.cm-trailingSpace .cm-highlightSpace):before {
-      content: attr(data-display);
-      @include before;
+  // if we should always show the space allocated for list markers
+  &.swcm6-outline-list-markers {
+    .markdown-source-view.mod-cm6 {
+      .cm-line {
+        .cm-formatting-list-ul,
+        .cm-formatting-list-ol,
+        .task-list-label {
+          background-color: var(--swcm6-outline-list-markers-color);
+        }
+      }
     }
   }
-}
-body:not(.swcm6-nix-plugin-styles).swcm6-outline-list-markers {
-  .markdown-source-view.mod-cm6 {
-    .cm-line {
-      .cm-formatting-list-ul,
-      .cm-formatting-list-ol,
-      .task-list-label {
-        background-color: var(--swcm6-outline-list-markers-color);
+
+  // If we should show all whitespace
+  &.swcm6-show-all-whitespace {
+    .markdown-source-view.mod-cm6 .cm-line {
+      @include all-whitespace;
+    }
+  }
+
+  // Otherwise...
+  &:not(.swcm6-show-all-whitespace) {
+    // show only leading/trailing whitespace
+    .markdown-source-view.mod-cm6 .cm-line {
+      .cm-indent,
+      .cm-indent-spacing:first-child,
+      .cm-trailingSpace {
+        @include all-whitespace;
+      }
+    }
+
+    // show more than single spaces
+    &.swcm6-show-extra-whitespace {
+      .markdown-source-view.mod-cm6 .cm-line {
+        .cm-highlightSpace[data-display$="··"] {
+          @include whitespace;
+          &:before {
+            @include before;
+          }
+        }
+      }
+    }
+
+    // if we should also show codeblock whitespace,
+    // include the all-whitespace mixin for codeblocks
+    &.swcm6-show-codeblock-whitespace {
+      .markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock {
+        @include all-whitespace;
       }
     }
   }
