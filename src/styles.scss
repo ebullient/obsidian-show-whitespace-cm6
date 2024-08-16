@@ -22,6 +22,10 @@
     }
   }
 }
+body {
+  --line-end: '¬';
+  --line-break: '↲';
+}
 .theme-dark {
   --swcm6-outline-list-markers-color: rgba(var(--mono-rgb-100), 0.05);
 }
@@ -70,7 +74,7 @@ body:not(.swcm6-nix-plugin-styles) {
       &:not(:has(br)):not(:has(span)):after,
       &:has(span):not(:has(.cm-trailing-space-new-line)):not(:has(.cm-trailingSpace)):after {
         color: var(--show-whitespace-color);
-        content: '¬';
+        content: var(--line-end);
         @include line-ending;
       }
       .cm-trailing-space-a .cm-highlightSpace:before,
@@ -86,7 +90,7 @@ body:not(.swcm6-nix-plugin-styles) {
             content: '';
           }
           .cm-highlightSpace:after {
-            content: '↲';
+            content: var(--line-break);
             @include line-ending;
           }
         }
