@@ -3,7 +3,7 @@
 	"name": "Show Whitespace",
 	"version": "0.2.0",
 	"minAppVersion": "1.5.0",
-	"description": "Show leading and trailing whitespace in source mode (CodeMirror6)",
+	"description": "CSS styles and CM6 extensions to highlight whitespace in Source and Live Preview modes.",
 	"author": "ebullient",
 	"authorUrl": "https://github.com/ebullient",
 	"isDesktopOnly": false
