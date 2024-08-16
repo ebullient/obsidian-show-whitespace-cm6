@@ -20,6 +20,20 @@ You can also completely disable the plugin's CSS and use your own.
 2. Copy the plugin `style.css` into your own CSS snippet
 3. Update styles as desired.
 
+### Examples
+
+Plugin disabled:
+<img width="337" alt="image" src="https://github.com/user-attachments/assets/0b7f3026-106b-4692-a791-2fb37c6d974c">
+
+Show all whitespace (preempts other settings), outline list markers:
+<img width="374" alt="image" src="https://github.com/user-attachments/assets/2e102973-e432-4885-a904-362d12604e98">
+
+Show consecutive whitespace, outline list markers: 
+<img width="384" alt="image" src="https://github.com/user-attachments/assets/e91cb05d-387d-453d-bcb7-f08075a6ccb2">
+
+Outline list markers:
+<img width="338" alt="image" src="https://github.com/user-attachments/assets/b25dc1b3-5238-4fd4-b41a-f69935864098">
+
 ## Installation
 
 To install:
