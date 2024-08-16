@@ -22,17 +22,31 @@ You can also completely disable the plugin's CSS and use your own.
 
 ### Examples
 
-Plugin disabled:
-<img width="337" alt="image" src="https://github.com/user-attachments/assets/0b7f3026-106b-4692-a791-2fb37c6d974c">
+Once enabled, the plugin always shows leading space (as that is the hardest to see).
+Display of inner/trailing spaces depends on configuration.
 
-Show all whitespace (preempts other settings), outline list markers:
-<img width="374" alt="image" src="https://github.com/user-attachments/assets/2e102973-e432-4885-a904-362d12604e98">
+- Plugin disabled:  
+    <img width="337" alt="image" src="https://github.com/user-attachments/assets/0b7f3026-106b-4692-a791-2fb37c6d974c">
 
-Show consecutive whitespace, outline list markers: 
-<img width="384" alt="image" src="https://github.com/user-attachments/assets/e91cb05d-387d-453d-bcb7-f08075a6ccb2">
+- Show all whitespace (preempts other settings), outline list markers:  
+    <img width="374" alt="image" src="https://github.com/user-attachments/assets/2e102973-e432-4885-a904-362d12604e98">
 
-Outline list markers:
-<img width="338" alt="image" src="https://github.com/user-attachments/assets/b25dc1b3-5238-4fd4-b41a-f69935864098">
+- Show consecutive whitespace, outline list markers:  
+    <img width="384" alt="image" src="https://github.com/user-attachments/assets/e91cb05d-387d-453d-bcb7-f08075a6ccb2">
+
+- Outline list markers:  
+    <img width="338" alt="image" src="https://github.com/user-attachments/assets/b25dc1b3-5238-4fd4-b41a-f69935864098">
+
+### Line endings
+
+Redefine `--line-end` or `--line-break` to change how those characters appear in a snippet. 
+
+```css
+body {
+  --line-end: '¬';
+  --line-break: '↲';
+}
+```
 
 ## Installation
 
