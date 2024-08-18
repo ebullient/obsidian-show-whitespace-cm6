@@ -15,6 +15,10 @@ export const DEFAULT_SETTINGS: SWSettings = {
     },
     disablePluginStyles: false,
     showBlockquoteMarkers: false,
+    showFrontmatterWhitespace: true,
+    showExtraWhitespace: false,
+    showLineEndings: true,
+    showTableWhitespace: true,
     showCodeblockWhitespace: false,
     showAllWhitespace: false,
     outlineListMarkers: false,
@@ -34,8 +38,6 @@ export class ShowWhitespacePlugin extends Plugin {
 
         await this.loadSettings();
         this.addSettingTab(new ShowWhitespaceSettingsTab(this.app, this));
-
-        document.body.classList.add(this.manifest.id);
         this.initClasses();
 
         this.registerEditorExtension(this.cmExtension);
@@ -65,7 +67,7 @@ export class ShowWhitespacePlugin extends Plugin {
     }
 
     initClasses(): void {
-        this.classList = [];
+        this.classList = [this.manifest.id];
         if (!this.settings.enabled || this.settings.disablePluginStyles) {
             this.classList.push("swcm6-nix-plugin-styles");
         }
@@ -76,8 +78,20 @@ export class ShowWhitespacePlugin extends Plugin {
             if (this.settings.showCodeblockWhitespace) {
                 this.classList.push("swcm6-show-codeblock-whitespace");
             }
+            if (this.settings.showAllCodeblockWhitespace) {
+                this.classList.push("swcm6-show-all-codeblock-whitespace");
+            }
             if (this.settings.showExtraWhitespace) {
                 this.classList.push("swcm6-show-extra-whitespace");
+            }
+            if (this.settings.showLineEndings) {
+                this.classList.push("swcm6-show-line-endings");
+            }
+            if (this.settings.showFrontmatterWhitespace) {
+                this.classList.push("swcm6-show-frontmatter-whitespace");
+            }
+            if (this.settings.showTableWhitespace) {
+                this.classList.push("swcm6-show-table-whitespace");
             }
             if (this.settings.showAllWhitespace) {
                 this.classList.push("swcm6-show-all-whitespace");
@@ -95,7 +109,6 @@ export class ShowWhitespacePlugin extends Plugin {
 
     onunload(): void {
         console.log("(SW-CM6) unloading Show Whitespace");
-        document.body.classList.add(this.manifest.id);
         this.removeClasses();
     }
 

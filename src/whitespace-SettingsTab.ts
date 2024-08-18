@@ -61,7 +61,8 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
         new Setting(this.containerEl)
             .setName("Suppress plugin styles")
             .setDesc(
-                "Enable to remove plugin styles. You will need to define your own snippet to customize the appearance of whitespace",
+                "Disable the plugin's default styles. " +
+                    "You will need to provide your own CSS snippets to customize the appearance of whitespace.",
             )
             .addToggle((toggle) =>
                 toggle
@@ -77,8 +78,10 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
             );
 
         new Setting(this.containerEl)
-            .setName("Always show blockquote markers")
-            .setDesc("Show the leading > for blockquotes in Live Preview")
+            .setName("Show blockquote markers")
+            .setDesc(
+                "Always display the leading '>' for blockquotes in Live Preview mode.",
+            )
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.newSettings.showBlockquoteMarkers)
@@ -93,18 +96,43 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
             );
 
         new Setting(this.containerEl)
-            .setName("Show all whitespace characters in code blocks")
+            .setName("Highlight List Markers")
             .setDesc(
-                "Add a marker for all whitespace characters in code blocks (included in Show all whitespace)",
+                "Add a visual style to the space reserved by list markers (e.g., '-', '1.').",
             )
             .addToggle((toggle) =>
                 toggle
-                    .setValue(this.newSettings.showCodeblockWhitespace)
+                    .setValue(this.newSettings.outlineListMarkers)
                     .onChange(async (value) => {
-                        value = value || this.newSettings.showAllWhitespace;
                         const redraw =
-                            value != this.newSettings.showCodeblockWhitespace;
-                        this.newSettings.showCodeblockWhitespace = value;
+                            value != this.newSettings.outlineListMarkers;
+                        this.newSettings.outlineListMarkers = value;
+                        if (redraw) {
+                            this.drawElements();
+                        }
+                    }),
+            );
+
+        new Setting(this.containerEl).setHeading().setName("Whitespace");
+
+        this.containerEl.createEl("p", {
+            text:
+                "By default, this plugin will show leading and trailing whitespace " +
+                "including marks for line endings, hard breaks, and tabs.",
+        });
+
+        new Setting(this.containerEl)
+            .setName("Show all whitespace")
+            .setDesc(
+                "Display markers for all whitespace characters, including those between words.",
+            )
+            .addToggle((toggle) =>
+                toggle
+                    .setValue(this.newSettings.showAllWhitespace)
+                    .onChange(async (value) => {
+                        const redraw =
+                            value != this.newSettings.showAllWhitespace;
+                        this.newSettings.showAllWhitespace = value;
                         if (redraw) {
                             this.drawElements();
                         }
@@ -114,7 +142,7 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
         new Setting(this.containerEl)
             .setName("Show consecutive whitespace")
             .setDesc(
-                "Add markers for multiple whitespace characters between words",
+                "Display markers only for multiple consecutive whitespace characters between words (included in 'Show All Whitespace').",
             )
             .addToggle((toggle) =>
                 toggle
@@ -131,17 +159,44 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
             );
 
         new Setting(this.containerEl)
-            .setName("Show all whitespace characters")
+            .setName("Show line endings")
             .setDesc(
-                "Add a marker for all whitespace characters, even those between words",
+                "Display markers for line endings (different from hard line breaks).",
             )
             .addToggle((toggle) =>
                 toggle
-                    .setValue(this.newSettings.showAllWhitespace)
+                    .setValue(this.newSettings.showLineEndings)
                     .onChange(async (value) => {
                         const redraw =
-                            value != this.newSettings.showAllWhitespace;
-                        this.newSettings.showAllWhitespace = value;
+                            value != this.newSettings.showLineEndings;
+                        this.newSettings.showLineEndings = value;
+                        if (redraw) {
+                            this.drawElements();
+                        }
+                    }),
+            );
+
+        new Setting(this.containerEl).setHeading().setName("Content types");
+
+        this.containerEl.createEl("p", {
+            text:
+                "The following settings allow you to enable or disable the display of whitespace characters within the document. " +
+                "Unless otherwise noted, the appearance of whitespace follows the settings above.",
+        });
+
+        new Setting(this.containerEl)
+            .setName("Show frontmatter whitespace")
+            .setDesc(
+                "Display whitespace characters in YAML frontmatter (properties).",
+            )
+            .addToggle((toggle) =>
+                toggle
+                    .setValue(this.newSettings.showFrontmatterWhitespace)
+                    .onChange(async (value) => {
+                        value = value || this.newSettings.showAllWhitespace;
+                        const redraw =
+                            value != this.newSettings.showFrontmatterWhitespace;
+                        this.newSettings.showFrontmatterWhitespace = value;
                         if (redraw) {
                             this.drawElements();
                         }
@@ -149,17 +204,59 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
             );
 
         new Setting(this.containerEl)
-            .setName("Outline list markers")
+            .setName("Show table whitespace")
             .setDesc(
-                "Add a style to the space reserved by list markers (e.g. ' -' or ' 1.')",
+                "Display leading or trailing whitespace characters in tables.",
             )
             .addToggle((toggle) =>
                 toggle
-                    .setValue(this.newSettings.outlineListMarkers)
+                    .setValue(this.newSettings.showTableWhitespace)
+                    .onChange(async (value) => {
+                        value = value || this.newSettings.showAllWhitespace;
+                        const redraw =
+                            value != this.newSettings.showTableWhitespace;
+                        this.newSettings.showTableWhitespace = value;
+                        if (redraw) {
+                            this.drawElements();
+                        }
+                    }),
+            );
+
+        new Setting(this.containerEl)
+            .setName("Show code block whitespace")
+            .setDesc(
+                "Display leading/trailing whitespace characters in code blocks (included in 'Show All Code Block Whitespace')",
+            )
+            .addToggle((toggle) =>
+                toggle
+                    .setValue(this.newSettings.showCodeblockWhitespace)
+                    .onChange(async (value) => {
+                        value =
+                            value ||
+                            this.newSettings.showAllCodeblockWhitespace;
+                        const redraw =
+                            value != this.newSettings.showCodeblockWhitespace;
+                        this.newSettings.showCodeblockWhitespace = value;
+                        if (redraw) {
+                            this.drawElements();
+                        }
+                    }),
+            );
+
+        new Setting(this.containerEl)
+            .setName("Show all code block whitespace")
+            .setDesc(
+                "Display all whitespace characters in code blocks, making them look more like a code editor. " +
+                    "This will override the settings above.",
+            )
+            .addToggle((toggle) =>
+                toggle
+                    .setValue(this.newSettings.showAllCodeblockWhitespace)
                     .onChange(async (value) => {
                         const redraw =
-                            value != this.newSettings.outlineListMarkers;
-                        this.newSettings.outlineListMarkers = value;
+                            value !=
+                            this.newSettings.showAllCodeblockWhitespace;
+                        this.newSettings.showAllCodeblockWhitespace = value;
                         if (redraw) {
                             this.drawElements();
                         }

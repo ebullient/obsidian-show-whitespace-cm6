@@ -22,9 +22,12 @@
     }
   }
 }
-body {
-  --line-end: '¬';
-  --line-break: '↲';
+@mixin hide-whitespace {
+  --line-end: none;
+  --line-break: none;
+  .cm-highlightSpace:before {
+    color: transparent;
+  }
 }
 .theme-dark {
   --swcm6-outline-list-markers-color: rgba(var(--mono-rgb-100), 0.05);
@@ -36,6 +39,12 @@ body {
 body:not(.swcm6-nix-plugin-styles) {
   --show-whitespace-color: var(--color-base-40);
   --indentation-guide-editing-indent: 0;
+  --line-end: none;
+  --line-break: '↲';
+
+  &.swcm6-show-line-endings {
+    --line-end: '¬';
+  }
 
   .markdown-source-view.mod-cm6 {
     .HyperMD-list-line-nobullet .cm-indent {
@@ -85,7 +94,6 @@ body:not(.swcm6-nix-plugin-styles) {
       .cm-hmd-codeblock:last-child,
       .cm-trailing-space-new-line {
         .cm-trailingSpace:has(.cm-highlightSpace[data-display$="··"]) {
-          // stuff
           .cm-highlightSpace:not(.cm-hmd-codeblock .cm-trailingSpace .cm-highlightSpace):before {
             content: '';
           }
@@ -123,14 +131,11 @@ body:not(.swcm6-nix-plugin-styles) {
     }
   }
 
-  // If we should show all whitespace
   &.swcm6-show-all-whitespace {
     .markdown-source-view.mod-cm6 .cm-line {
       @include all-whitespace;
     }
   }
-
-  // Otherwise...
   &:not(.swcm6-show-all-whitespace) {
     // show only leading/trailing whitespace
     .markdown-source-view.mod-cm6 .cm-line {
@@ -140,8 +145,7 @@ body:not(.swcm6-nix-plugin-styles) {
         @include all-whitespace;
       }
     }
-
-    // show more than single spaces
+    // show consecutive whitespace in the middle of the line
     &.swcm6-show-extra-whitespace {
       .markdown-source-view.mod-cm6 .cm-line {
         .cm-highlightSpace[data-display$="··"] {
@@ -152,13 +156,25 @@ body:not(.swcm6-nix-plugin-styles) {
         }
       }
     }
-
-    // if we should also show codeblock whitespace,
-    // include the all-whitespace mixin for codeblocks
-    &.swcm6-show-codeblock-whitespace {
-      .markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock {
-        @include all-whitespace;
-      }
+  }
+  &.swcm6-show-all-codeblock-whitespace {
+    .markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock {
+      @include all-whitespace;
+    }
+  }
+  &:not(.swcm6-show-codeblock-whitespace):not(.swcm6-show-all-codeblock-whitespace) {
+    .cm-line.HyperMD-codeblock {
+      @include hide-whitespace;
+    }
+  }
+  &:not(.swcm6-show-frontmatter-whitespace) {
+    .cm-line:has(.cm-hmd-frontmatter) {
+      @include hide-whitespace;
+    }
+  }
+  &:not(.swcm6-show-table-whitespace) {
+    .cm-line.HyperMD-table-row {
+      @include hide-whitespace;
     }
   }
 }
