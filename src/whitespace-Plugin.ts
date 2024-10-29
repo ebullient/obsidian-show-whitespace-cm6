@@ -14,15 +14,16 @@ export const DEFAULT_SETTINGS: SWSettings = {
         patch: 0,
     },
     disablePluginStyles: false,
+    enabled: true,
+    outlineListMarkers: false,
+    showAllCodeblockWhitespace: false,
+    showAllWhitespace: false,
     showBlockquoteMarkers: false,
-    showFrontmatterWhitespace: true,
+    showCodeblockWhitespace: false,
     showExtraWhitespace: false,
+    showFrontmatterWhitespace: true,
     showLineEndings: true,
     showTableWhitespace: true,
-    showCodeblockWhitespace: false,
-    showAllWhitespace: false,
-    outlineListMarkers: false,
-    enabled: true,
 };
 
 export class ShowWhitespacePlugin extends Plugin {
