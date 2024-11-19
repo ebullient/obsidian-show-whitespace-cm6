@@ -24,7 +24,7 @@
   "repository": "github.com:ebullient/obsidian-show-whitespace-cm6",
   "license": "AGPL-3.0-only",
   "devDependencies": {
-    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.14.0",
     "@types/codemirror": "5.60.15",
     "@types/node": "^22.8.7",
