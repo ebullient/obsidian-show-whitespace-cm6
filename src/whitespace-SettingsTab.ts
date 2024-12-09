@@ -1,6 +1,6 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
-import ShowWhitespacePlugin from "./main";
-import { SWSettings } from "./@types/settings";
+import { type App, PluginSettingTab, Setting } from "obsidian";
+import type { SWSettings } from "./@types/settings";
+import type ShowWhitespacePlugin from "./main";
 
 export class ShowWhitespaceSettingsTab extends PluginSettingTab {
     plugin: ShowWhitespacePlugin;
@@ -36,7 +36,7 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
 
         new Setting(this.containerEl)
             .setName("Save settings")
-            .setClass(id + "-save-reset")
+            .setClass(`${id}-save-reset`)
             .addButton((button) =>
                 button
                     .setIcon("reset")
@@ -69,7 +69,7 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
                     .setValue(this.newSettings.disablePluginStyles)
                     .onChange(async (value) => {
                         const redraw =
-                            value != this.newSettings.disablePluginStyles;
+                            value !== this.newSettings.disablePluginStyles;
                         this.newSettings.disablePluginStyles = value;
                         if (redraw) {
                             this.drawElements();
@@ -87,7 +87,7 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
                     .setValue(this.newSettings.showBlockquoteMarkers)
                     .onChange(async (value) => {
                         const redraw =
-                            value != this.newSettings.showBlockquoteMarkers;
+                            value !== this.newSettings.showBlockquoteMarkers;
                         this.newSettings.showBlockquoteMarkers = value;
                         if (redraw) {
                             this.drawElements();
@@ -105,7 +105,7 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
                     .setValue(this.newSettings.outlineListMarkers)
                     .onChange(async (value) => {
                         const redraw =
-                            value != this.newSettings.outlineListMarkers;
+                            value !== this.newSettings.outlineListMarkers;
                         this.newSettings.outlineListMarkers = value;
                         if (redraw) {
                             this.drawElements();
@@ -131,7 +131,7 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
                     .setValue(this.newSettings.showAllWhitespace)
                     .onChange(async (value) => {
                         const redraw =
-                            value != this.newSettings.showAllWhitespace;
+                            value !== this.newSettings.showAllWhitespace;
                         this.newSettings.showAllWhitespace = value;
                         if (redraw) {
                             this.drawElements();
@@ -147,10 +147,10 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.newSettings.showExtraWhitespace)
-                    .onChange(async (value) => {
-                        value = value || this.newSettings.showAllWhitespace;
+                    .onChange(async (v) => {
+                        const value = v || this.newSettings.showAllWhitespace;
                         const redraw =
-                            value != this.newSettings.showExtraWhitespace;
+                            value !== this.newSettings.showExtraWhitespace;
                         this.newSettings.showExtraWhitespace = value;
                         if (redraw) {
                             this.drawElements();
@@ -168,7 +168,7 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
                     .setValue(this.newSettings.showLineEndings)
                     .onChange(async (value) => {
                         const redraw =
-                            value != this.newSettings.showLineEndings;
+                            value !== this.newSettings.showLineEndings;
                         this.newSettings.showLineEndings = value;
                         if (redraw) {
                             this.drawElements();
@@ -192,10 +192,11 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.newSettings.showFrontmatterWhitespace)
-                    .onChange(async (value) => {
-                        value = value || this.newSettings.showAllWhitespace;
+                    .onChange(async (v) => {
+                        const value = v || this.newSettings.showAllWhitespace;
                         const redraw =
-                            value != this.newSettings.showFrontmatterWhitespace;
+                            value !==
+                            this.newSettings.showFrontmatterWhitespace;
                         this.newSettings.showFrontmatterWhitespace = value;
                         if (redraw) {
                             this.drawElements();
@@ -211,10 +212,10 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.newSettings.showTableWhitespace)
-                    .onChange(async (value) => {
-                        value = value || this.newSettings.showAllWhitespace;
+                    .onChange(async (v) => {
+                        const value = v || this.newSettings.showAllWhitespace;
                         const redraw =
-                            value != this.newSettings.showTableWhitespace;
+                            value !== this.newSettings.showTableWhitespace;
                         this.newSettings.showTableWhitespace = value;
                         if (redraw) {
                             this.drawElements();
@@ -230,12 +231,11 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.newSettings.showCodeblockWhitespace)
-                    .onChange(async (value) => {
-                        value =
-                            value ||
-                            this.newSettings.showAllCodeblockWhitespace;
+                    .onChange(async (v) => {
+                        const value =
+                            v || this.newSettings.showAllCodeblockWhitespace;
                         const redraw =
-                            value != this.newSettings.showCodeblockWhitespace;
+                            value !== this.newSettings.showCodeblockWhitespace;
                         this.newSettings.showCodeblockWhitespace = value;
                         if (redraw) {
                             this.drawElements();
@@ -254,7 +254,7 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
                     .setValue(this.newSettings.showAllCodeblockWhitespace)
                     .onChange(async (value) => {
                         const redraw =
-                            value !=
+                            value !==
                             this.newSettings.showAllCodeblockWhitespace;
                         this.newSettings.showAllCodeblockWhitespace = value;
                         if (redraw) {

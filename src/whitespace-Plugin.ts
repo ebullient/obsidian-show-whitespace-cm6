@@ -1,10 +1,10 @@
-import { Command, Plugin, debounce } from "obsidian";
+import type { Extension } from "@codemirror/state";
 import {
     highlightTrailingWhitespace,
     highlightWhitespace,
 } from "@codemirror/view";
-import { Extension } from "@codemirror/state";
-import { SWSettings, SWVersion } from "./@types/settings";
+import { type Command, Plugin, debounce } from "obsidian";
+import type { SWSettings, SWVersion } from "./@types/settings";
 import { ShowWhitespaceSettingsTab } from "./whitespace-SettingsTab";
 
 export const DEFAULT_SETTINGS: SWSettings = {
@@ -34,7 +34,7 @@ export class ShowWhitespacePlugin extends Plugin {
 
     async onload(): Promise<void> {
         console.info(
-            "loading Show Whitespace (SW-CM6) v" + this.manifest.version,
+            `loading Show Whitespace (SW-CM6) v${this.manifest.version}`,
         );
 
         await this.loadSettings();
@@ -144,7 +144,7 @@ export class ShowWhitespacePlugin extends Plugin {
 
             // check settings version, adapt if necessary
             const version = toVersion(this.manifest.version);
-            if (compareVersion(version, this.settings.version) != 0) {
+            if (compareVersion(version, this.settings.version) !== 0) {
                 this.settings.version = version;
                 await this.saveSettings();
             }
