@@ -1,7 +1,7 @@
 {
 	"id": "show-whitespace-cm6",
 	"name": "Show Whitespace",
-	"version": "0.2.4",
+	"version": "0.2.5",
 	"minAppVersion": "1.5.0",
 	"description": "CSS styles and CM6 extensions to highlight whitespace in Source and Live Preview modes.",
 	"author": "ebullient",
