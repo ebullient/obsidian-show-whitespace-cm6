@@ -118,7 +118,7 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
         this.containerEl.createEl("p", {
             text:
                 "By default, this plugin will show leading and trailing whitespace " +
-                "including marks for line endings, hard breaks, and tabs.",
+                "including marks for hard breaks, and tabs.",
         });
 
         new Setting(this.containerEl)
@@ -139,29 +139,29 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
                     }),
             );
 
-        new Setting(this.containerEl)
-            .setName("Show consecutive whitespace")
-            .setDesc(
-                "Display markers only for multiple consecutive whitespace characters between words (included in 'Show All Whitespace').",
-            )
-            .addToggle((toggle) =>
-                toggle
-                    .setValue(this.newSettings.showExtraWhitespace)
-                    .onChange(async (v) => {
-                        const value = v || this.newSettings.showAllWhitespace;
-                        const redraw =
-                            value !== this.newSettings.showExtraWhitespace;
-                        this.newSettings.showExtraWhitespace = value;
-                        if (redraw) {
-                            this.drawElements();
-                        }
-                    }),
-            );
+        // new Setting(this.containerEl)
+        //     .setName("Show consecutive whitespace")
+        //     .setDesc(
+        //         "Display markers only for multiple consecutive whitespace characters between words (included in 'Show All Whitespace').",
+        //     )
+        //     .addToggle((toggle) =>
+        //         toggle
+        //             .setValue(this.newSettings.showExtraWhitespace)
+        //             .onChange(async (v) => {
+        //                 const value = v || this.newSettings.showAllWhitespace;
+        //                 const redraw =
+        //                     value !== this.newSettings.showExtraWhitespace;
+        //                 this.newSettings.showExtraWhitespace = value;
+        //                 if (redraw) {
+        //                     this.drawElements();
+        //                 }
+        //             }),
+        //     );
 
         new Setting(this.containerEl)
             .setName("Show line endings")
             .setDesc(
-                "Display markers for line endings (different from hard line breaks).",
+                "Display markers for line endings (different from hard line breaks, included in 'Show All Whitespace').",
             )
             .addToggle((toggle) =>
                 toggle
@@ -207,7 +207,7 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
         new Setting(this.containerEl)
             .setName("Show table whitespace")
             .setDesc(
-                "Display leading or trailing whitespace characters in tables.",
+                "Display whitespace characters in tables.",
             )
             .addToggle((toggle) =>
                 toggle
