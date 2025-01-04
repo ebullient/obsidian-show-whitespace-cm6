@@ -1,5 +1,6 @@
 import { type App, PluginSettingTab, Setting } from "obsidian";
 import type { SWSettings } from "./@types/settings";
+import { getTranslate } from "./i18n";
 import type ShowWhitespacePlugin from "./main";
 
 export class ShowWhitespaceSettingsTab extends PluginSettingTab {
@@ -28,21 +29,21 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
 
     drawElements(): void {
         const id = this.plugin.manifest.id;
-        const name = this.plugin.manifest.name;
+        const lang = window.localStorage.getItem("language");
+        const i18n = getTranslate(lang);
+        const name = i18n.manifestName || this.plugin.manifest.name;
 
         this.containerEl.empty();
         this.containerEl.addClass(id);
         new Setting(this.containerEl).setHeading().setName(name);
 
         new Setting(this.containerEl)
-            .setName("Save settings")
+            .setName(i18n.saveSettings.name)
             .setClass(`${id}-save-reset`)
             .addButton((button) =>
                 button
                     .setIcon("reset")
-                    .setTooltip(
-                        "Reset to previously saved (or generated) values",
-                    )
+                    .setTooltip(i18n.saveSettings.resetBtn.tooltip)
                     .onClick(() => {
                         this.reset();
                         console.log("(SW-CM6) Configuration reset");
@@ -51,7 +52,7 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
             .addButton((button) => {
                 button
                     .setIcon("save")
-                    .setTooltip("Save current values")
+                    .setTooltip(i18n.saveSettings.saveBtn.tooltip)
                     .onClick(async () => {
                         await this.save();
                     });
@@ -59,11 +60,8 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
             });
 
         new Setting(this.containerEl)
-            .setName("Suppress plugin styles")
-            .setDesc(
-                "Disable the plugin's default styles. " +
-                    "You will need to provide your own CSS snippets to customize the appearance of whitespace.",
-            )
+            .setName(i18n.suppressPluginStyles.name)
+            .setDesc(i18n.suppressPluginStyles.desc)
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.newSettings.disablePluginStyles)
@@ -78,10 +76,8 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
             );
 
         new Setting(this.containerEl)
-            .setName("Show blockquote markers")
-            .setDesc(
-                "Always display the leading '>' for blockquotes in Live Preview mode.",
-            )
+            .setName(i18n.showBlockquoteMarkers.name)
+            .setDesc(i18n.showBlockquoteMarkers.desc)
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.newSettings.showBlockquoteMarkers)
@@ -96,10 +92,8 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
             );
 
         new Setting(this.containerEl)
-            .setName("Highlight List Markers")
-            .setDesc(
-                "Add a visual style to the space reserved by list markers (e.g., '-', '1.').",
-            )
+            .setName(i18n.highlightListMarkers.name)
+            .setDesc(i18n.highlightListMarkers.desc)
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.newSettings.outlineListMarkers)
@@ -113,19 +107,15 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
                     }),
             );
 
-        new Setting(this.containerEl).setHeading().setName("Whitespace");
+        new Setting(this.containerEl).setHeading().setName(i18n.block2.name);
 
         this.containerEl.createEl("p", {
-            text:
-                "By default, this plugin will show leading and trailing whitespace " +
-                "including marks for hard breaks, and tabs.",
+            text: i18n.block2.desc,
         });
 
         new Setting(this.containerEl)
-            .setName("Show all whitespace")
-            .setDesc(
-                "Display markers for all whitespace characters, including those between words.",
-            )
+            .setName(i18n.showAllWhitespace.name)
+            .setDesc(i18n.showAllWhitespace.desc)
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.newSettings.showAllWhitespace)
@@ -140,10 +130,8 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
             );
 
         // new Setting(this.containerEl)
-        //     .setName("Show consecutive whitespace")
-        //     .setDesc(
-        //         "Display markers only for multiple consecutive whitespace characters between words (included in 'Show All Whitespace').",
-        //     )
+        //     .setName(i18n.showConsecutiveWhitespace.name)
+        //     .setDesc(i18n.showConsecutiveWhitespace.desc)
         //     .addToggle((toggle) =>
         //         toggle
         //             .setValue(this.newSettings.showExtraWhitespace)
@@ -159,10 +147,8 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
         //     );
 
         new Setting(this.containerEl)
-            .setName("Show line endings")
-            .setDesc(
-                "Display markers for line endings (different from hard line breaks, included in 'Show All Whitespace').",
-            )
+            .setName(i18n.showLineEndings.name)
+            .setDesc(i18n.showLineEndings.desc)
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.newSettings.showLineEndings)
@@ -176,19 +162,15 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
                     }),
             );
 
-        new Setting(this.containerEl).setHeading().setName("Content types");
+        new Setting(this.containerEl).setHeading().setName(i18n.block3.name);
 
         this.containerEl.createEl("p", {
-            text:
-                "The following settings allow you to enable or disable the display of whitespace characters within the document. " +
-                "Unless otherwise noted, the appearance of whitespace follows the settings above.",
+            text: i18n.block3.desc,
         });
 
         new Setting(this.containerEl)
-            .setName("Show frontmatter whitespace")
-            .setDesc(
-                "Display whitespace characters in YAML frontmatter (properties).",
-            )
+            .setName(i18n.showFrontmatterWhitespace.name)
+            .setDesc(i18n.showFrontmatterWhitespace.desc)
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.newSettings.showFrontmatterWhitespace)
@@ -205,10 +187,8 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
             );
 
         new Setting(this.containerEl)
-            .setName("Show table whitespace")
-            .setDesc(
-                "Display whitespace characters in tables.",
-            )
+            .setName(i18n.showTableWhitespace.name)
+            .setDesc(i18n.showTableWhitespace.desc)
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.newSettings.showTableWhitespace)
@@ -224,10 +204,8 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
             );
 
         new Setting(this.containerEl)
-            .setName("Show code block whitespace")
-            .setDesc(
-                "Display leading/trailing whitespace characters in code blocks (included in 'Show All Code Block Whitespace')",
-            )
+            .setName(i18n.showCodeBlockWhitespace.name)
+            .setDesc(i18n.showCodeBlockWhitespace.desc)
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.newSettings.showCodeblockWhitespace)
@@ -244,11 +222,8 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
             );
 
         new Setting(this.containerEl)
-            .setName("Show all code block whitespace")
-            .setDesc(
-                "Display all whitespace characters in code blocks, making them look more like a code editor. " +
-                    "This will override the settings above.",
-            )
+            .setName(i18n.showAllCodeBlockWhitespace.name)
+            .setDesc(i18n.showAllCodeBlockWhitespace.desc)
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.newSettings.showAllCodeblockWhitespace)
