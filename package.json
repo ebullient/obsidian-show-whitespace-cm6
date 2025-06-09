@@ -28,7 +28,7 @@
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@types/codemirror": "5.60.16",
-    "@types/node": "^22.15.29",
+    "@types/node": "^22.15.30",
     "auto-changelog": "^2.5.0",
     "builtin-modules": "^5.0.0",
     "dotenv": "^16.5.0",
