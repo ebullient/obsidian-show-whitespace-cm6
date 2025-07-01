@@ -3,7 +3,7 @@ import {
     highlightTrailingWhitespace,
     highlightWhitespace,
 } from "@codemirror/view";
-import { type Command, Plugin, debounce } from "obsidian";
+import { type Command, debounce, Plugin } from "obsidian";
 import type { SWSettings, SWVersion } from "./@types/settings";
 import { ShowWhitespaceSettingsTab } from "./whitespace-SettingsTab";
 
