@@ -27,9 +27,9 @@
 @mixin lineEndings {
   br {
     --swcm6-width: 0;
+    display: contents;
   }
 
-  br,
   &:not(.HyperMD-codeblock):not(:has(> .cm-trailing-space-new-line))::after {
     content: var(--line-end);
     @include line-ending;
