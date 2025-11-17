@@ -30,7 +30,7 @@
     display: contents;
   }
 
-  &:not(.HyperMD-codeblock):not(:has(> .cm-trailing-space-new-line))::after {
+  &:not(:has(> .cm-trailing-space-new-line))::after {
     content: var(--line-end);
     @include line-ending;
   }
@@ -140,12 +140,6 @@ body:not(.swcm6-nix-plugin-styles) {
     // always show trailing whitespace; set whitespace color
     .markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock {
       --show-whitespace-color: rgba(var(--mono-rgb-100), .35);
-
-      // there aren't markdown newline processng rules here
-      > :last-child::after {
-        content: var(--line-end);
-        @include line-ending;
-      }
     }
   }
   &.swcm6-show-all-codeblock-whitespace {
