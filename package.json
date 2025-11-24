@@ -27,7 +27,7 @@
   "license": "AGPL-3.0-only",
   "devDependencies": {
     "@biomejs/biome": "2.3.0",
-    "@types/codemirror": "5.60.16",
+    "@types/codemirror": "5.60.17",
     "@types/node": "^24.9.1",
     "auto-changelog": "^2.5.0",
     "builtin-modules": "^5.0.0",
