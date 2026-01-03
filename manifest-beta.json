@@ -6,5 +6,6 @@
 	"description": "Show leading and trailing whitespace in source mode (CodeMirror6)",
 	"author": "ebullient",
 	"authorUrl": "https://github.com/ebullient",
+  "fundingUrl": "https://buymeacoffee.com/ebullient",
 	"isDesktopOnly": false
 }
