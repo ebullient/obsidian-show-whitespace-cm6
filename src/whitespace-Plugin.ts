@@ -47,7 +47,7 @@ export class ShowWhitespacePlugin extends Plugin {
         const markToggle: Command = {
             id: "whitespace-toggle",
             name: "Toggle Show Whitespace",
-            icon: "pilcrow",
+            icon: "eye",
             callback: async () => this.toggleExtension(this),
         };
         this.addCommand(markToggle);

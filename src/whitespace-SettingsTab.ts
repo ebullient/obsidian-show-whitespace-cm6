@@ -11,6 +11,7 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
     constructor(app: App, plugin: ShowWhitespacePlugin) {
         super(app, plugin);
         this.plugin = plugin;
+        this.icon = "eye";
     }
 
     async save() {
