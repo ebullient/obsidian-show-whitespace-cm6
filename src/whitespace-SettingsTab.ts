@@ -130,23 +130,6 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
                     }),
             );
 
-        // new Setting(this.containerEl)
-        //     .setName(i18n.showConsecutiveWhitespace.name)
-        //     .setDesc(i18n.showConsecutiveWhitespace.desc)
-        //     .addToggle((toggle) =>
-        //         toggle
-        //             .setValue(this.newSettings.showExtraWhitespace)
-        //             .onChange(async (v) => {
-        //                 const value = v || this.newSettings.showAllWhitespace;
-        //                 const redraw =
-        //                     value !== this.newSettings.showExtraWhitespace;
-        //                 this.newSettings.showExtraWhitespace = value;
-        //                 if (redraw) {
-        //                     this.drawElements();
-        //                 }
-        //             }),
-        //     );
-
         new Setting(this.containerEl)
             .setName(i18n.showLineEndings.name)
             .setDesc(i18n.showLineEndings.desc)

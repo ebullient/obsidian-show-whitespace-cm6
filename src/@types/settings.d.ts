@@ -1,14 +1,6 @@
-export type SWVersion = {
-    major: number;
-    minor: number;
-    patch: number;
-};
-
 export interface SWSettings {
-    version: SWVersion;
     disablePluginStyles: boolean;
     showBlockquoteMarkers: boolean;
-    showExtraWhitespace: boolean;
     showLineEndings: boolean;
     showFrontmatterWhitespace: boolean;
     showCodeblockWhitespace: boolean;
@@ -17,6 +9,7 @@ export interface SWSettings {
     showAllWhitespace: boolean;
     outlineListMarkers: boolean;
     enabled: boolean;
+    cmExtensionEnabled?: boolean; // Computed field - true if CM extensions should be active
 }
 
 declare module "obsidian" {

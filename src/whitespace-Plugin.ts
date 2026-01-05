@@ -4,15 +4,10 @@ import {
     highlightWhitespace,
 } from "@codemirror/view";
 import { type Command, debounce, Plugin } from "obsidian";
-import type { SWSettings, SWVersion } from "./@types/settings";
+import type { SWSettings } from "./@types/settings";
 import { ShowWhitespaceSettingsTab } from "./whitespace-SettingsTab";
 
 export const DEFAULT_SETTINGS: SWSettings = {
-    version: {
-        major: 0,
-        minor: 0,
-        patch: 0,
-    },
     disablePluginStyles: false,
     enabled: true,
     outlineListMarkers: false,
@@ -20,7 +15,6 @@ export const DEFAULT_SETTINGS: SWSettings = {
     showAllWhitespace: false,
     showBlockquoteMarkers: false,
     showCodeblockWhitespace: false,
-    showExtraWhitespace: false,
     showFrontmatterWhitespace: true,
     showLineEndings: true,
     showTableWhitespace: true,
@@ -42,7 +36,7 @@ export class ShowWhitespacePlugin extends Plugin {
         this.initClasses();
 
         this.registerEditorExtension(this.cmExtension);
-        this.handleExtension(true);
+        this.handleExtension();
 
         const markToggle: Command = {
             id: "whitespace-toggle",
@@ -53,18 +47,22 @@ export class ShowWhitespacePlugin extends Plugin {
         this.addCommand(markToggle);
     }
 
-    handleExtension(onload: boolean): void {
-        console.log("(SW-CM6) enabled", this.settings.enabled);
-        this.removeClasses();
-        this.initClasses();
+    handleExtension(): void {
+        console.log(
+            "(SW-CM6) cmExtensionEnabled",
+            this.settings.cmExtensionEnabled,
+        );
         this.cmExtension.length = 0;
-        if (this.settings.enabled) {
+        if (this.settings.cmExtensionEnabled) {
             this.cmExtension.push(highlightWhitespace());
             this.cmExtension.push(highlightTrailingWhitespace());
         }
-        if (!onload) {
-            this.app.workspace.updateOptions();
-        }
+        this.app.workspace.updateOptions();
+    }
+
+    updateClasses(): void {
+        this.removeClasses();
+        this.initClasses();
     }
 
     initClasses(): void {
@@ -81,9 +79,6 @@ export class ShowWhitespacePlugin extends Plugin {
             }
             if (this.settings.showAllCodeblockWhitespace) {
                 this.classList.push("swcm6-show-all-codeblock-whitespace");
-            }
-            if (this.settings.showExtraWhitespace) {
-                this.classList.push("swcm6-show-extra-whitespace");
             }
             if (this.settings.showLineEndings) {
                 this.classList.push("swcm6-show-line-endings");
@@ -120,12 +115,27 @@ export class ShowWhitespacePlugin extends Plugin {
 
     public onExternalSettingsChange = debounce(
         async () => {
-            this.settings = Object.assign(
+            const externalData = await this.loadData();
+            const externalSettings = Object.assign(
                 {},
-                this.settings,
-                await this.loadData(),
+                DEFAULT_SETTINGS,
+                externalData,
             );
-            this.updateSettings(this.settings);
+            this.computeCMExtensionEnabled(externalSettings);
+
+            // Check if any setting actually changed
+            const hasChanges = (
+                Object.keys(externalSettings) as Array<keyof SWSettings>
+            ).some((key) => this.settings[key] !== externalSettings[key]);
+
+            if (!hasChanges) {
+                console.debug(
+                    "(SW-CM6) external settings unchanged, skipping update",
+                );
+                return;
+            }
+
+            this.applySettings(externalSettings);
             console.debug("(SW-CM6) external settings changed");
         },
         2000,
@@ -141,42 +151,43 @@ export class ShowWhitespacePlugin extends Plugin {
         if (!this.settings) {
             const options = await this.loadData();
             this.settings = Object.assign({}, DEFAULT_SETTINGS, options);
-
-            // check settings version, adapt if necessary
-            const version = toVersion(this.manifest.version);
-            if (compareVersion(version, this.settings.version) !== 0) {
-                this.settings.version = version;
-                await this.saveSettings();
-            }
+            this.computeCMExtensionEnabled(this.settings);
+            console.debug("settings loaded", this.settings);
         }
     }
 
+    computeCMExtensionEnabled(settings: SWSettings) {
+        // CM extensions should be enabled if any whitespace visualization is on
+        settings.cmExtensionEnabled =
+            settings.enabled &&
+            (settings.showLineEndings ||
+                settings.showFrontmatterWhitespace ||
+                settings.showCodeblockWhitespace ||
+                settings.showAllCodeblockWhitespace ||
+                settings.showTableWhitespace ||
+                settings.showAllWhitespace);
+    }
+
+    applySettings(newSettings: SWSettings): void {
+        const wasCMExtensionEnabled = this.settings.cmExtensionEnabled;
+        this.settings = newSettings;
+
+        // Only update extensions if the CM extension state changed
+        if (wasCMExtensionEnabled !== this.settings.cmExtensionEnabled) {
+            this.handleExtension();
+        }
+        this.updateClasses();
+    }
+
     async updateSettings(newSettings: SWSettings): Promise<void> {
-        this.settings = Object.assign({}, this.settings, newSettings);
+        const mergedSettings = Object.assign({}, this.settings, newSettings);
+        this.computeCMExtensionEnabled(mergedSettings);
+        this.applySettings(mergedSettings);
         await this.saveSettings();
-        this.handleExtension(false);
-        console.log("(SW-CM6) settings and classes updated");
+        console.log("(SW-CM6) settings and classes updated", this.settings);
     }
 
     async saveSettings(): Promise<void> {
         await this.saveData(this.settings);
     }
-}
-
-function compareVersion(v1: SWVersion, v2: SWVersion): number {
-    if (v1.major === v2.major) {
-        if (v1.minor === v2.minor) {
-            return v1.patch - v2.patch;
-        }
-        return v1.minor - v2.minor;
-    }
-    return v1.major - v2.major;
-}
-function toVersion(version: string): SWVersion {
-    const v = version.split(".");
-    return {
-        major: Number(v[0]),
-        minor: Number(v[1]),
-        patch: Number(v[2]),
-    };
 }
