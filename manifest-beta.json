@@ -1,7 +1,7 @@
 {
 	"id": "show-whitespace-cm6",
 	"name": "Show Whitespace",
-	"version": "0.2.8",
+	"version": "0.2.9",
 	"minAppVersion": "1.9.0",
 	"description": "Show leading and trailing whitespace in source mode (CodeMirror6)",
 	"author": "ebullient",

@@ -1,6 +1,6 @@
 {
   "name": "show-whitespace-cm6",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "private": true,
   "description": "Show leading and trailing whitespace in source mode (CodeMirror6)",
   "main": "main.js",
@@ -47,8 +47,8 @@
     "commitLimit": false,
     "ignoreCommitPattern": "(🔖|🔨|🧹|changelog|release|Update README).*",
     "replaceText": {
-        "([;.,] [rR]esolves) #\\d+\\.?\\s*$": "$1",
-        "([;.,] [Ff]ixes) #\\d+\\.?\\s*$": "$1"
+      "([;.,] [rR]esolves) #\\d+\\.?\\s*$": "$1",
+      "([;.,] [Ff]ixes) #\\d+\\.?\\s*$": "$1"
     }
   }
 }
