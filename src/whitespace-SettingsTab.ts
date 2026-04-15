@@ -18,13 +18,14 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
         await this.plugin.updateSettings(this.newSettings);
     }
 
-    async display(): Promise<void> {
-        await this.plugin.loadSettings();
-        this.reset();
+    display(): void {
+        void this.plugin.loadSettings().then(() => this.reset());
     }
 
     async reset(): Promise<void> {
-        this.newSettings = JSON.parse(JSON.stringify(this.plugin.settings));
+        this.newSettings = JSON.parse(
+            JSON.stringify(this.plugin.settings),
+        ) as SWSettings;
         this.drawElements();
     }
 
@@ -45,9 +46,9 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
                 button
                     .setIcon("reset")
                     .setTooltip(i18n.saveSettings.resetBtn.tooltip)
-                    .onClick(() => {
-                        this.reset();
-                        console.log("(SW-CM6) Configuration reset");
+                    .onClick(async () => {
+                        await this.reset();
+                        console.debug("(SW-CM6) Configuration reset");
                     }),
             )
             .addButton((button) => {
@@ -225,6 +226,6 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
 
     /** Save on exit */
     hide(): void {
-        this.save();
+        void this.save();
     }
 }

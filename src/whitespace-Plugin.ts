@@ -27,7 +27,7 @@ export class ShowWhitespacePlugin extends Plugin {
     classList: string[] = [];
 
     async onload(): Promise<void> {
-        console.info(
+        console.debug(
             `loading Show Whitespace (SW-CM6) v${this.manifest.version}`,
         );
 
@@ -48,7 +48,7 @@ export class ShowWhitespacePlugin extends Plugin {
     }
 
     handleExtension(): void {
-        console.log(
+        console.debug(
             "(SW-CM6) cmExtensionEnabled",
             this.settings.cmExtensionEnabled,
         );
@@ -104,7 +104,7 @@ export class ShowWhitespacePlugin extends Plugin {
     }
 
     onunload(): void {
-        console.log("(SW-CM6) unloading Show Whitespace");
+        console.debug("(SW-CM6) unloading Show Whitespace");
         this.removeClasses();
     }
 
@@ -115,8 +115,8 @@ export class ShowWhitespacePlugin extends Plugin {
 
     public onExternalSettingsChange = debounce(
         async () => {
-            const externalData = await this.loadData();
-            const externalSettings = Object.assign(
+            const externalData = (await this.loadData()) as Partial<SWSettings>;
+            const externalSettings: SWSettings = Object.assign(
                 {},
                 DEFAULT_SETTINGS,
                 externalData,
@@ -144,12 +144,12 @@ export class ShowWhitespacePlugin extends Plugin {
 
     async toggleExtension(plugin: ShowWhitespacePlugin): Promise<void> {
         plugin.settings.enabled = !plugin.settings.enabled;
-        plugin.updateSettings(this.settings);
+        await plugin.updateSettings(this.settings);
     }
 
     async loadSettings(): Promise<void> {
         if (!this.settings) {
-            const options = await this.loadData();
+            const options = (await this.loadData()) as Partial<SWSettings>;
             this.settings = Object.assign({}, DEFAULT_SETTINGS, options);
             this.computeCMExtensionEnabled(this.settings);
             console.debug("settings loaded", this.settings);
@@ -184,7 +184,7 @@ export class ShowWhitespacePlugin extends Plugin {
         this.computeCMExtensionEnabled(mergedSettings);
         this.applySettings(mergedSettings);
         await this.saveSettings();
-        console.log("(SW-CM6) settings and classes updated", this.settings);
+        console.debug("(SW-CM6) settings and classes updated", this.settings);
     }
 
     async saveSettings(): Promise<void> {
