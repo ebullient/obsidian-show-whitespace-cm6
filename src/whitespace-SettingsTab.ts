@@ -1,4 +1,4 @@
-import { type App, PluginSettingTab, Setting } from "obsidian";
+import { type App, getLanguage, PluginSettingTab, Setting } from "obsidian";
 import type { SWSettings } from "./@types/settings";
 import { getTranslate } from "./i18n";
 import type ShowWhitespacePlugin from "./main";
@@ -31,7 +31,7 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
 
     drawElements(): void {
         const id = this.plugin.manifest.id;
-        const lang = window.localStorage.getItem("language");
+        const lang = getLanguage();
         const i18n = getTranslate(lang);
         const name = i18n.manifestName || this.plugin.manifest.name;
 

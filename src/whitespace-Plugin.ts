@@ -96,11 +96,11 @@ export class ShowWhitespacePlugin extends Plugin {
                 this.classList.push("swcm6-outline-list-markers");
             }
         }
-        document.body.addClasses(this.classList);
+        activeDocument.body.addClasses(this.classList);
     }
 
     removeClasses(): void {
-        document.body.removeClasses(this.classList);
+        activeDocument.body.removeClasses(this.classList);
     }
 
     onunload(): void {
