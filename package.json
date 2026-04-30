@@ -28,7 +28,6 @@
   "license": "AGPL-3.0-only",
   "devDependencies": {
     "@biomejs/biome": "2.4.9",
-    "@codemirror/view": "^6.0.0",
     "@types/codemirror": "5.60.17",
     "@types/node": "^25.3.5",
     "@typescript-eslint/parser": "^8.56.1",
