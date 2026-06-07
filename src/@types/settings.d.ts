@@ -1,15 +1,22 @@
 export interface SWSettings {
     disablePluginStyles: boolean;
-    showBlockquoteMarkers: boolean;
+    enabled: boolean;
+    // Markers
     showLineEndings: boolean;
+    showHardLineBreaks: boolean;
+    showTrailingWhitespace: boolean;
+    showConsecutiveWhitespace: boolean;
+    // Structural
+    showBlockquoteMarkers: boolean;
+    outlineListMarkers: boolean;
+    // Space dot contexts (CSS only — driven by cmExtensionEnabled)
     showFrontmatterWhitespace: boolean;
+    showTableWhitespace: boolean;
     showCodeblockWhitespace: boolean;
     showAllCodeblockWhitespace: boolean;
-    showTableWhitespace: boolean;
     showAllWhitespace: boolean;
-    outlineListMarkers: boolean;
-    enabled: boolean;
-    cmExtensionEnabled?: boolean; // Computed field - true if CM extensions should be active
+    // Computed — not persisted
+    cmExtensionEnabled?: boolean;
 }
 
 declare module "obsidian" {

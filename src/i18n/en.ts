@@ -1,9 +1,6 @@
 export const en = {
     manifestName: "Show Whitespace",
 
-    block1: {
-        name: "Show Whitespace",
-    },
     saveSettings: {
         name: "Save settings",
         resetBtn: {
@@ -19,56 +16,62 @@ export const en = {
             "Disable the plugin's default styles. " +
             "You will need to provide your own CSS snippets to customize the appearance of whitespace.",
     },
+
+    markersSection: {
+        name: "Markers",
+        desc: "Character markers appended or overlaid by the CM6 extension. Each is fully independent.",
+    },
+    showLineEndings: {
+        name: "Line endings (¬)",
+        desc: "Show a pilcrow at the end of every line.",
+    },
+    showHardLineBreaks: {
+        name: "Hard line breaks (↲)",
+        desc: "Show a return marker on lines ending in two or more spaces — the Markdown hard line break syntax.",
+    },
+    showTrailingWhitespace: {
+        name: "Trailing spaces",
+        desc: "Highlight stray spaces or tabs at the end of lines.",
+    },
+    showConsecutiveWhitespace: {
+        name: "Double spaces",
+        desc: "Highlight two or more consecutive spaces within a line — catches accidental double spaces between words.",
+    },
+
+    structuralSection: {
+        name: "Structural",
+    },
     showBlockquoteMarkers: {
-        name: "Show blockquote markers",
+        name: "Blockquote markers",
         desc: "Always display the leading '>' for blockquotes in Live Preview mode.",
     },
     highlightListMarkers: {
-        name: "Highlight List Markers",
+        name: "Highlight list markers",
         desc: "Add a visual style to the space reserved by list markers (e.g., '-', '1.').",
     },
 
-    block2: {
-        name: "Whitespace",
-        desc:
-            "By default, this plugin will show leading and trailing whitespace " +
-            "including marks for line endings, hard breaks, and tabs.",
-    },
-    showAllWhitespace: {
-        name: "Show all whitespace",
-        desc: "Display markers for all whitespace characters, including those between words.",
-    },
-    showConsecutiveWhitespace: {
-        name: "Show consecutive whitespace",
-        desc: "Display markers only for multiple consecutive whitespace characters between words (included in 'Show All Whitespace').",
-    },
-    showLineEndings: {
-        name: "Show line endings",
-        desc: "Display markers for line endings (different from hard line breaks).",
-    },
-
-    block3: {
-        name: "Content types",
-        desc:
-            "The following settings allow you to enable or disable the display of whitespace characters within the document. " +
-            "Unless otherwise noted, the appearance of whitespace follows the settings above.",
+    spaceContextsSection: {
+        name: "Space dot contexts",
+        desc: "Show a dot for each space character within the selected contexts. All toggles are independent.",
     },
     showFrontmatterWhitespace: {
-        name: "Show frontmatter whitespace",
-        desc: "Display whitespace characters in YAML frontmatter (properties).",
+        name: "Frontmatter",
+        desc: "Show space dots in YAML frontmatter (properties).",
     },
     showTableWhitespace: {
-        name: "Show table whitespace",
-        desc: "Display leading or trailing whitespace characters in tables.",
+        name: "Tables",
+        desc: "Show space dots in table cells.",
     },
     showCodeBlockWhitespace: {
-        name: "Show code block whitespace",
-        desc: "Display leading/trailing whitespace characters in code blocks (included in 'Show All Code Block Whitespace')",
+        name: "Code blocks (leading/trailing only)",
+        desc: "Show space dots for leading and trailing spaces in code blocks.",
     },
     showAllCodeBlockWhitespace: {
-        name: "Show all code block whitespace",
-        desc:
-            "Display all whitespace characters in code blocks, making them look more like a code editor. " +
-            "This will override the settings above.",
+        name: "Code blocks (all spaces)",
+        desc: "Show space dots for every space in code blocks, making them look more like a code editor.",
+    },
+    showAllWhitespace: {
+        name: "Everywhere",
+        desc: "Show space dots for all spaces in the document, including between words.",
     },
 };

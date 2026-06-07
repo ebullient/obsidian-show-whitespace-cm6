@@ -13,7 +13,7 @@
 
 body:not(.swcm6-nix-plugin-styles) {
   --line-end: '¬';
-  --line-break: '↲';
+  --hard-break: '↲';
 
   // Always show blockquote markers...
   &.swcm6-show-blockquote-markers {
@@ -37,7 +37,63 @@ body:not(.swcm6-nix-plugin-styles) {
     }
   }
 
-  .cm-highlightSpace {
+  // Tile a dot across the trailing whitespace span, one marker per character.
+  &.swcm6-show-trailing-whitespace .cm-trailingSpace {
+    background-color: transparent !important;
+    background-image: var(--swcm6-space-bg-image) !important;
+    background-size: 1ch 100% !important;
+    background-repeat: repeat-x !important;
+    background-position: center !important;
+  }
+
+  &.swcm6-show-consecutive-whitespace .cm-consecutiveSpace {
     background-image: var(--swcm6-space-bg-image);
+    background-size: 1ch 100%;
+    background-repeat: repeat-x;
+    background-position: center;
+  }
+
+  // Suppress CM6's built-in global dot (@codemirror/view injects its own background-image
+  // for .cm-highlightSpace via StyleModule/adoptedStyleSheets, which can win over a regular
+  // linked stylesheet even at lower specificity in some browsers). !important is required.
+  .cm-highlightSpace {
+    background-image: none !important;
+  }
+
+  // Show all whitespace everywhere
+  &.swcm6-show-all-whitespace .cm-highlightSpace {
+    background-image: var(--swcm6-space-bg-image) !important;
+  }
+
+  // Show whitespace only in YAML frontmatter (Source mode; Live Preview uses the Properties panel)
+  &.swcm6-show-frontmatter-whitespace .cm-hmd-frontmatter .cm-highlightSpace {
+    background-image: var(--swcm6-space-bg-image) !important;
+  }
+
+  // Show whitespace only in table rows
+  &.swcm6-show-table-whitespace .HyperMD-table-row .cm-highlightSpace {
+    background-image: var(--swcm6-space-bg-image) !important;
+  }
+
+  // Show leading/trailing whitespace in code blocks
+  &.swcm6-show-codeblock-whitespace .HyperMD-codeblock .cm-highlightSpace {
+    background-image: var(--swcm6-space-bg-image) !important;
+  }
+
+  // Show all whitespace in code blocks (overrides above)
+  &.swcm6-show-all-codeblock-whitespace .HyperMD-codeblock .cm-highlightSpace {
+    background-image: var(--swcm6-space-bg-image) !important;
+  }
+
+  .swcm6-line-end-marker::after {
+    content: var(--line-end);
+    color: var(--swcm6-whitespace-color);
+    pointer-events: none;
+  }
+
+  .swcm6-hard-break-marker::after {
+    content: var(--hard-break);
+    color: var(--swcm6-whitespace-color);
+    pointer-events: none;
   }
 }
