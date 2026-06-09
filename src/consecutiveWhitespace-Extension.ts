@@ -57,11 +57,6 @@ const consecutivePlugin = ViewPlugin.fromClass(
 
             if (hasRebuild || update.viewportChanged) {
                 this.decorations = consecutiveDecorator.createDeco(update.view);
-            } else {
-                this.decorations = consecutiveDecorator.updateDeco(
-                    update,
-                    this.decorations,
-                );
             }
         }
 

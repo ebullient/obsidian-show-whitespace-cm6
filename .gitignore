@@ -14,3 +14,6 @@ build
 
 # obsidian
 data.json
+
+# ad-hoc dev scripts
+test-trailing-space.js

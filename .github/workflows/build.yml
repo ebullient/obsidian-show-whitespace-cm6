@@ -37,4 +37,18 @@ jobs:
       run: |
         npm ci
         npm run build
-        # npm run test
+        npm run test
+
+    - name: Check manifest files in sync
+      run: |
+        id1=$(jq -r '.id' manifest.json)
+        id2=$(jq -r '.id' manifest-beta.json)
+        ver1=$(jq -r '.version' manifest.json)
+        ver2=$(jq -r '.version' manifest-beta.json)
+        if [ "$id1" != "$id2" ] || [ "$ver1" != "$ver2" ]; then
+          echo "manifest.json and manifest-beta.json are out of sync"
+          echo "  manifest.json:      id=$id1 version=$ver1"
+          echo "  manifest-beta.json: id=$id2 version=$ver2"
+          exit 1
+        fi
+        echo "manifests in sync: id=$id1 version=$ver1"

@@ -1,16 +1,20 @@
 # Obsidian: Show Whitespace
 
-[![GitHub tag (Latest by date)](https://img.shields.io/github/v/tag/ebullient/obsidian-show-whitespace-cm6)](https://github.com/ebullient/obsidian-show-whitespace-cm6/releases) ![GitHub all releases](https://img.shields.io/github/downloads/ebullient/obsidian-show-whitespace-cm6/total?color=success) [![CC BY-SA 4.0][cc-by-sa-shield]][cc-by-sa]
+[![GitHub tag (Latest by date)](https://img.shields.io/github/v/tag/ebullient/obsidian-show-whitespace-cm6)](https://github.com/ebullient/obsidian-show-whitespace-cm6/releases) ![GitHub all releases](https://img.shields.io/github/downloads/ebullient/obsidian-show-whitespace-cm6/total?color=success) [![AGPL-3.0][agpl-shield]][agpl]
 
-This is a simple plugin to enable CodeMirror 6 extensions to highlight whitespace in both Source and Live Preview modes.
+This plugin uses CodeMirror 6 extensions to visualize whitespace in both Source and Live Preview modes.
 
 ## Features
 
-- **Whitespace Visualization:** Displays leading and trailing whitespace in your notes.
-- **Blockquote Identification:** Highlights the leading caret for blockquotes, making them easily distinguishable.
-- **List marker whitespace:** Slight background applied to whitespace assigned to list markers (bullets or numbers)
+Each feature has its own independent toggle in settings. All markers hide while you are actively typing and reappear one second after the last keystroke.
 
-Basic CSS styling provided by the plugin renders characters for whitespace at the beginning and ending of lines (not in the middle) for readability.
+- **Line endings (¬):** Appends a pilcrow character at the end of every line (suppressed on the cursor line).
+- **Hard line breaks (↲):** Marks lines ending in two or more spaces — the Markdown hard line break syntax (suppressed on the cursor line).
+- **Trailing spaces:** Highlights stray spaces or tabs at the end of lines with dot markers.
+- **Double spaces:** Highlights two or more consecutive spaces within a line.
+- **Blockquote markers:** Always shows the leading `>` for blockquotes in Live Preview mode.
+- **List marker outline:** Applies a subtle background to the space reserved by list markers.
+- **Space dot contexts:** Shows a dot per space character selectively in frontmatter, tables, code blocks, or everywhere.
 
 ## Look / Feel options
 
@@ -38,12 +42,12 @@ Display of inner/trailing spaces depends on configuration.
 
 ### Line endings
 
-Redefine `--line-end` or `--line-break` to change how those characters appear in a snippet.
+Redefine `--line-end` or `--hard-break` to change how those characters appear in a CSS snippet.
 
 ```css
 body {
   --line-end: '¬';
-  --line-break: '↲';
+  --hard-break: '↲';
 }
 ```
 
@@ -88,9 +92,7 @@ While this is a new implementation for CM6, styles and characters are inspired b
 
 ## License
 
-This work is licensed under a [Creative Commons Attribution-ShareAlike 4.0 International License][cc-by-sa].
+This work is licensed under the [GNU Affero General Public License v3.0][agpl].
 
-[![CC BY-SA 4.0](https://licensebuttons.net/l/by-sa/4.0/88x31.png)][cc-by-sa]
-
-[cc-by-sa]: http://creativecommons.org/licenses/by-sa/4.0/
-[cc-by-sa-shield]: https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg
+[agpl]: https://www.gnu.org/licenses/agpl-3.0.en.html
+[agpl-shield]: https://img.shields.io/badge/License-AGPL%20v3-blue.svg

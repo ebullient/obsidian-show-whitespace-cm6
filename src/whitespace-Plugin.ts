@@ -12,6 +12,11 @@ import { lineEndingsExtension } from "./lineEndings-Extension";
 import { trailingWhitespaceExtension } from "./trailingWhitespace-Extension";
 import { ShowWhitespaceSettingsTab } from "./whitespace-SettingsTab";
 
+// Hoisted so the extension object identity is stable across handleExtension() calls.
+// CM6 diffs the extension array by identity; a new object each call tears down and
+// re-initializes CM6's internal whitespace highlight state on every settings toggle.
+const highlightWhitespaceExt = highlightWhitespace();
+
 // Obsidian's setEphemeralState can dispatch a selection that points beyond the
 // document end when switching to Source mode, causing a CM6 RangeError crash.
 // This filter clamps any out-of-bounds selection to a safe position before
@@ -38,6 +43,16 @@ const clampSelectionFilter = EditorState.transactionFilter.of((tr) => {
         scrollIntoView: tr.scrollIntoView,
     };
 });
+
+export function computeCMExtensionEnabled(settings: SWSettings): void {
+    settings.cmExtensionEnabled =
+        settings.enabled &&
+        (settings.showAllWhitespace ||
+            settings.showFrontmatterWhitespace ||
+            settings.showCodeblockWhitespace ||
+            settings.showAllCodeblockWhitespace ||
+            settings.showTableWhitespace);
+}
 
 export const DEFAULT_SETTINGS: SWSettings = {
     disablePluginStyles: false,
@@ -95,7 +110,7 @@ export class ShowWhitespacePlugin extends Plugin {
         this.cmExtension.push(clampSelectionFilter);
         if (this.settings.enabled) {
             if (this.settings.cmExtensionEnabled) {
-                this.cmExtension.push(highlightWhitespace());
+                this.cmExtension.push(highlightWhitespaceExt);
             }
             if (this.settings.showLineEndings) {
                 this.cmExtension.push(lineEndingsExtension());
@@ -213,13 +228,7 @@ export class ShowWhitespacePlugin extends Plugin {
     }
 
     computeCMExtensionEnabled(settings: SWSettings) {
-        settings.cmExtensionEnabled =
-            settings.enabled &&
-            (settings.showAllWhitespace ||
-                settings.showFrontmatterWhitespace ||
-                settings.showCodeblockWhitespace ||
-                settings.showAllCodeblockWhitespace ||
-                settings.showTableWhitespace);
+        computeCMExtensionEnabled(settings);
     }
 
     applySettings(newSettings: SWSettings): void {
