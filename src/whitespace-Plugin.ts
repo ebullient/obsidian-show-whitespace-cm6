@@ -1,22 +1,55 @@
-import type { Extension } from "@codemirror/state";
 import {
-    highlightTrailingWhitespace,
-    highlightWhitespace,
-} from "@codemirror/view";
+    EditorSelection,
+    EditorState,
+    type Extension,
+} from "@codemirror/state";
+import { highlightWhitespace } from "@codemirror/view";
 import { type Command, debounce, Plugin } from "obsidian";
 import type { SWSettings } from "./@types/settings";
+import { markersExtension } from "./markers-Extension";
 import { ShowWhitespaceSettingsTab } from "./whitespace-SettingsTab";
+
+// Obsidian's setEphemeralState can dispatch a selection that points beyond the
+// document end when switching to Source mode, causing a CM6 RangeError crash.
+// This filter clamps any out-of-bounds selection to a safe position before
+// CM6 validates it.
+const clampSelectionFilter = EditorState.transactionFilter.of((tr) => {
+    if (!tr.selection) return tr;
+    const maxPos = tr.newDoc.length;
+    const needsFix = tr.selection.ranges.some(
+        (r) => r.anchor > maxPos || r.head > maxPos,
+    );
+    if (!needsFix) return tr;
+    return {
+        changes: tr.changes,
+        selection: EditorSelection.create(
+            tr.selection.ranges.map((r) =>
+                EditorSelection.range(
+                    Math.min(r.anchor, maxPos),
+                    Math.min(r.head, maxPos),
+                ),
+            ),
+            tr.selection.mainIndex,
+        ),
+        effects: tr.effects,
+        scrollIntoView: tr.scrollIntoView,
+    };
+});
 
 export const DEFAULT_SETTINGS: SWSettings = {
     disablePluginStyles: false,
     enabled: true,
+    // Markers
+    showLineEndings: true,
+    showHardLineBreaks: true,
+    // Structural
     outlineListMarkers: false,
+    showBlockquoteMarkers: false,
+    // Space dot contexts
     showAllCodeblockWhitespace: false,
     showAllWhitespace: false,
-    showBlockquoteMarkers: false,
     showCodeblockWhitespace: false,
     showFrontmatterWhitespace: true,
-    showLineEndings: true,
     showTableWhitespace: true,
 };
 
@@ -42,7 +75,7 @@ export class ShowWhitespacePlugin extends Plugin {
             id: "whitespace-toggle",
             name: "Toggle Show Whitespace",
             icon: "eye",
-            callback: async () => this.toggleExtension(this),
+            callback: async () => this.toggleExtension(),
         };
         this.addCommand(markToggle);
     }
@@ -53,9 +86,18 @@ export class ShowWhitespacePlugin extends Plugin {
             this.settings.cmExtensionEnabled,
         );
         this.cmExtension.length = 0;
-        if (this.settings.cmExtensionEnabled) {
-            this.cmExtension.push(highlightWhitespace());
-            this.cmExtension.push(highlightTrailingWhitespace());
+        // Always active: prevents Obsidian's setEphemeralState crash on Source mode entry
+        this.cmExtension.push(clampSelectionFilter);
+        if (this.settings.enabled) {
+            if (this.settings.cmExtensionEnabled) {
+                this.cmExtension.push(highlightWhitespace());
+            }
+            if (
+                this.settings.showLineEndings ||
+                this.settings.showHardLineBreaks
+            ) {
+                this.cmExtension.push(markersExtension(this.settings));
+            }
         }
         this.app.workspace.updateOptions();
     }
@@ -142,9 +184,9 @@ export class ShowWhitespacePlugin extends Plugin {
         true,
     );
 
-    async toggleExtension(plugin: ShowWhitespacePlugin): Promise<void> {
-        plugin.settings.enabled = !plugin.settings.enabled;
-        await plugin.updateSettings(this.settings);
+    async toggleExtension(): Promise<void> {
+        this.settings.enabled = !this.settings.enabled;
+        await this.updateSettings(this.settings);
     }
 
     async loadSettings(): Promise<void> {
@@ -157,23 +199,28 @@ export class ShowWhitespacePlugin extends Plugin {
     }
 
     computeCMExtensionEnabled(settings: SWSettings) {
-        // CM extensions should be enabled if any whitespace visualization is on
         settings.cmExtensionEnabled =
             settings.enabled &&
-            (settings.showLineEndings ||
+            (settings.showAllWhitespace ||
                 settings.showFrontmatterWhitespace ||
                 settings.showCodeblockWhitespace ||
                 settings.showAllCodeblockWhitespace ||
-                settings.showTableWhitespace ||
-                settings.showAllWhitespace);
+                settings.showTableWhitespace);
     }
 
     applySettings(newSettings: SWSettings): void {
+        const wasEnabled = this.settings.enabled;
         const wasCMExtensionEnabled = this.settings.cmExtensionEnabled;
+        const wasShowLineEndings = this.settings.showLineEndings;
+        const wasShowHardLineBreaks = this.settings.showHardLineBreaks;
         this.settings = newSettings;
 
-        // Only update extensions if the CM extension state changed
-        if (wasCMExtensionEnabled !== this.settings.cmExtensionEnabled) {
+        if (
+            wasEnabled !== this.settings.enabled ||
+            wasCMExtensionEnabled !== this.settings.cmExtensionEnabled ||
+            wasShowLineEndings !== this.settings.showLineEndings ||
+            wasShowHardLineBreaks !== this.settings.showHardLineBreaks
+        ) {
             this.handleExtension();
         }
         this.updateClasses();
@@ -188,6 +235,8 @@ export class ShowWhitespacePlugin extends Plugin {
     }
 
     async saveSettings(): Promise<void> {
-        await this.saveData(this.settings);
+        // cmExtensionEnabled is computed — don't persist it
+        const { cmExtensionEnabled: _derived, ...dataToSave } = this.settings;
+        await this.saveData(dataToSave);
     }
 }

@@ -29,6 +29,20 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
         this.drawElements();
     }
 
+    private toggle(key: keyof SWSettings, name: string, desc: string): void {
+        new Setting(this.containerEl)
+            .setName(name)
+            .setDesc(desc)
+            .addToggle((toggle) =>
+                toggle
+                    .setValue(this.newSettings[key] as boolean)
+                    .onChange(async (value) => {
+                        (this.newSettings[key] as boolean) = value;
+                        this.drawElements();
+                    }),
+            );
+    }
+
     drawElements(): void {
         const id = this.plugin.manifest.id;
         const lang = getLanguage();
@@ -61,167 +75,78 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
                 this.saveButton = button.buttonEl;
             });
 
+        this.toggle(
+            "disablePluginStyles",
+            i18n.suppressPluginStyles.name,
+            i18n.suppressPluginStyles.desc,
+        );
+
+        // ── Markers ──────────────────────────────────────────────────────────
         new Setting(this.containerEl)
-            .setName(i18n.suppressPluginStyles.name)
-            .setDesc(i18n.suppressPluginStyles.desc)
-            .addToggle((toggle) =>
-                toggle
-                    .setValue(this.newSettings.disablePluginStyles)
-                    .onChange(async (value) => {
-                        const redraw =
-                            value !== this.newSettings.disablePluginStyles;
-                        this.newSettings.disablePluginStyles = value;
-                        if (redraw) {
-                            this.drawElements();
-                        }
-                    }),
-            );
+            .setHeading()
+            .setName(i18n.markersSection.name);
+        this.containerEl.createEl("p", { text: i18n.markersSection.desc });
 
+        this.toggle(
+            "showLineEndings",
+            i18n.showLineEndings.name,
+            i18n.showLineEndings.desc,
+        );
+        this.toggle(
+            "showHardLineBreaks",
+            i18n.showHardLineBreaks.name,
+            i18n.showHardLineBreaks.desc,
+        );
+
+        // ── Structural ────────────────────────────────────────────────────────
         new Setting(this.containerEl)
-            .setName(i18n.showBlockquoteMarkers.name)
-            .setDesc(i18n.showBlockquoteMarkers.desc)
-            .addToggle((toggle) =>
-                toggle
-                    .setValue(this.newSettings.showBlockquoteMarkers)
-                    .onChange(async (value) => {
-                        const redraw =
-                            value !== this.newSettings.showBlockquoteMarkers;
-                        this.newSettings.showBlockquoteMarkers = value;
-                        if (redraw) {
-                            this.drawElements();
-                        }
-                    }),
-            );
+            .setHeading()
+            .setName(i18n.structuralSection.name);
 
+        this.toggle(
+            "showBlockquoteMarkers",
+            i18n.showBlockquoteMarkers.name,
+            i18n.showBlockquoteMarkers.desc,
+        );
+        this.toggle(
+            "outlineListMarkers",
+            i18n.highlightListMarkers.name,
+            i18n.highlightListMarkers.desc,
+        );
+
+        // ── Space dot contexts ────────────────────────────────────────────────
         new Setting(this.containerEl)
-            .setName(i18n.highlightListMarkers.name)
-            .setDesc(i18n.highlightListMarkers.desc)
-            .addToggle((toggle) =>
-                toggle
-                    .setValue(this.newSettings.outlineListMarkers)
-                    .onChange(async (value) => {
-                        const redraw =
-                            value !== this.newSettings.outlineListMarkers;
-                        this.newSettings.outlineListMarkers = value;
-                        if (redraw) {
-                            this.drawElements();
-                        }
-                    }),
-            );
-
-        new Setting(this.containerEl).setHeading().setName(i18n.block2.name);
-
+            .setHeading()
+            .setName(i18n.spaceContextsSection.name);
         this.containerEl.createEl("p", {
-            text: i18n.block2.desc,
+            text: i18n.spaceContextsSection.desc,
         });
 
-        new Setting(this.containerEl)
-            .setName(i18n.showAllWhitespace.name)
-            .setDesc(i18n.showAllWhitespace.desc)
-            .addToggle((toggle) =>
-                toggle
-                    .setValue(this.newSettings.showAllWhitespace)
-                    .onChange(async (value) => {
-                        const redraw =
-                            value !== this.newSettings.showAllWhitespace;
-                        this.newSettings.showAllWhitespace = value;
-                        if (redraw) {
-                            this.drawElements();
-                        }
-                    }),
-            );
-
-        new Setting(this.containerEl)
-            .setName(i18n.showLineEndings.name)
-            .setDesc(i18n.showLineEndings.desc)
-            .addToggle((toggle) =>
-                toggle
-                    .setValue(this.newSettings.showLineEndings)
-                    .onChange(async (value) => {
-                        const redraw =
-                            value !== this.newSettings.showLineEndings;
-                        this.newSettings.showLineEndings = value;
-                        if (redraw) {
-                            this.drawElements();
-                        }
-                    }),
-            );
-
-        new Setting(this.containerEl).setHeading().setName(i18n.block3.name);
-
-        this.containerEl.createEl("p", {
-            text: i18n.block3.desc,
-        });
-
-        new Setting(this.containerEl)
-            .setName(i18n.showFrontmatterWhitespace.name)
-            .setDesc(i18n.showFrontmatterWhitespace.desc)
-            .addToggle((toggle) =>
-                toggle
-                    .setValue(this.newSettings.showFrontmatterWhitespace)
-                    .onChange(async (v) => {
-                        const value = v || this.newSettings.showAllWhitespace;
-                        const redraw =
-                            value !==
-                            this.newSettings.showFrontmatterWhitespace;
-                        this.newSettings.showFrontmatterWhitespace = value;
-                        if (redraw) {
-                            this.drawElements();
-                        }
-                    }),
-            );
-
-        new Setting(this.containerEl)
-            .setName(i18n.showTableWhitespace.name)
-            .setDesc(i18n.showTableWhitespace.desc)
-            .addToggle((toggle) =>
-                toggle
-                    .setValue(this.newSettings.showTableWhitespace)
-                    .onChange(async (v) => {
-                        const value = v || this.newSettings.showAllWhitespace;
-                        const redraw =
-                            value !== this.newSettings.showTableWhitespace;
-                        this.newSettings.showTableWhitespace = value;
-                        if (redraw) {
-                            this.drawElements();
-                        }
-                    }),
-            );
-
-        new Setting(this.containerEl)
-            .setName(i18n.showCodeBlockWhitespace.name)
-            .setDesc(i18n.showCodeBlockWhitespace.desc)
-            .addToggle((toggle) =>
-                toggle
-                    .setValue(this.newSettings.showCodeblockWhitespace)
-                    .onChange(async (v) => {
-                        const value =
-                            v || this.newSettings.showAllCodeblockWhitespace;
-                        const redraw =
-                            value !== this.newSettings.showCodeblockWhitespace;
-                        this.newSettings.showCodeblockWhitespace = value;
-                        if (redraw) {
-                            this.drawElements();
-                        }
-                    }),
-            );
-
-        new Setting(this.containerEl)
-            .setName(i18n.showAllCodeBlockWhitespace.name)
-            .setDesc(i18n.showAllCodeBlockWhitespace.desc)
-            .addToggle((toggle) =>
-                toggle
-                    .setValue(this.newSettings.showAllCodeblockWhitespace)
-                    .onChange(async (value) => {
-                        const redraw =
-                            value !==
-                            this.newSettings.showAllCodeblockWhitespace;
-                        this.newSettings.showAllCodeblockWhitespace = value;
-                        if (redraw) {
-                            this.drawElements();
-                        }
-                    }),
-            );
+        this.toggle(
+            "showFrontmatterWhitespace",
+            i18n.showFrontmatterWhitespace.name,
+            i18n.showFrontmatterWhitespace.desc,
+        );
+        this.toggle(
+            "showTableWhitespace",
+            i18n.showTableWhitespace.name,
+            i18n.showTableWhitespace.desc,
+        );
+        this.toggle(
+            "showCodeblockWhitespace",
+            i18n.showCodeBlockWhitespace.name,
+            i18n.showCodeBlockWhitespace.desc,
+        );
+        this.toggle(
+            "showAllCodeblockWhitespace",
+            i18n.showAllCodeBlockWhitespace.name,
+            i18n.showAllCodeBlockWhitespace.desc,
+        );
+        this.toggle(
+            "showAllWhitespace",
+            i18n.showAllWhitespace.name,
+            i18n.showAllWhitespace.desc,
+        );
     }
 
     /** Save on exit */
