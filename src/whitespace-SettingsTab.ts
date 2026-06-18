@@ -97,6 +97,11 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
             i18n.showHardLineBreaks.name,
             i18n.showHardLineBreaks.desc,
         );
+        this.toggle(
+            "showUnicodeWhitespace",
+            i18n.showUnicodeWhitespace.name,
+            i18n.showUnicodeWhitespace.desc,
+        );
 
         // ── Structural ────────────────────────────────────────────────────────
         new Setting(this.containerEl)

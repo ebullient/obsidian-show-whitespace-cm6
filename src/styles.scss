@@ -3,12 +3,14 @@
   --swcm6-whitespace-color: var(--color-base-40);
   --swcm6-outline-list-markers-color: rgba(var(--mono-rgb-100), 0.05);
   --swcm6-space-bg-image: radial-gradient(circle at 50% 55%, var(--color-base-50) 10%, transparent 2%);
+  --swcm6-unicode-space-bg-image: radial-gradient(circle at 50% 55%, var(--color-orange, #e67e22) 10%, transparent 2%);
 }
 
 .theme-light {
   --swcm6-whitespace-color: var(--color-base-35);
   --swcm6-outline-list-markers-color: rgba(var(--mono-rgb-100), 0.03);
   --swcm6-space-bg-image: radial-gradient(circle at 50% 55%, var(--color-base-30) 10%, transparent 2%);
+  --swcm6-unicode-space-bg-image: radial-gradient(circle at 50% 55%, var(--color-orange, #e67e22) 10%, transparent 2%);
 }
 
 body:not(.swcm6-nix-plugin-styles) {
@@ -67,6 +69,14 @@ body:not(.swcm6-nix-plugin-styles) {
   // Show all whitespace in code blocks (overrides above)
   &.swcm6-show-all-codeblock-whitespace .HyperMD-codeblock .cm-highlightSpace {
     background-image: var(--swcm6-space-bg-image) !important;
+  }
+
+  // Unicode whitespace (NBSP, thin space, etc.) — always visible, distinct color
+  .swcm6-unicode-space {
+    text-decoration: underline;
+    text-decoration-color: var(--color-orange, #e67e22);
+    text-decoration-style: solid;
+    text-underline-offset: 2px;
   }
 
   .swcm6-line-end-marker::after {

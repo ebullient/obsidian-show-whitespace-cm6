@@ -29,6 +29,10 @@ export const en = {
         name: "Hard line breaks (↲)",
         desc: "Show a return marker on lines ending in two or more spaces — the Markdown hard line break syntax.",
     },
+    showUnicodeWhitespace: {
+        name: "Unicode whitespace",
+        desc: "Highlight non-breaking spaces and other Unicode whitespace characters (NBSP, thin space, etc.) that are visually indistinguishable from regular spaces.",
+    },
 
     structuralSection: {
         name: "Structural",

@@ -42,6 +42,7 @@ export const DEFAULT_SETTINGS: SWSettings = {
     // Markers
     showLineEndings: true,
     showHardLineBreaks: true,
+    showUnicodeWhitespace: true,
     // Structural
     outlineListMarkers: false,
     showBlockquoteMarkers: false,
@@ -94,7 +95,8 @@ export class ShowWhitespacePlugin extends Plugin {
             }
             if (
                 this.settings.showLineEndings ||
-                this.settings.showHardLineBreaks
+                this.settings.showHardLineBreaks ||
+                this.settings.showUnicodeWhitespace
             ) {
                 this.cmExtension.push(markersExtension(this.settings));
             }
@@ -124,6 +126,9 @@ export class ShowWhitespacePlugin extends Plugin {
             }
             if (this.settings.showLineEndings) {
                 this.classList.push("swcm6-show-line-endings");
+            }
+            if (this.settings.showUnicodeWhitespace) {
+                this.classList.push("swcm6-show-unicode-whitespace");
             }
             if (this.settings.showFrontmatterWhitespace) {
                 this.classList.push("swcm6-show-frontmatter-whitespace");
@@ -213,13 +218,15 @@ export class ShowWhitespacePlugin extends Plugin {
         const wasCMExtensionEnabled = this.settings.cmExtensionEnabled;
         const wasShowLineEndings = this.settings.showLineEndings;
         const wasShowHardLineBreaks = this.settings.showHardLineBreaks;
+        const wasShowUnicodeWhitespace = this.settings.showUnicodeWhitespace;
         this.settings = newSettings;
 
         if (
             wasEnabled !== this.settings.enabled ||
             wasCMExtensionEnabled !== this.settings.cmExtensionEnabled ||
             wasShowLineEndings !== this.settings.showLineEndings ||
-            wasShowHardLineBreaks !== this.settings.showHardLineBreaks
+            wasShowHardLineBreaks !== this.settings.showHardLineBreaks ||
+            wasShowUnicodeWhitespace !== this.settings.showUnicodeWhitespace
         ) {
             this.handleExtension();
         }

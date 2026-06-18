@@ -11,6 +11,17 @@ import { createWhitespacePlugin } from "./debounce-util";
 /** Lines ending in two or more spaces are Markdown hard line breaks. */
 const HARD_BREAK_RE = / {2,}$/;
 
+/**
+ * Visible-width Unicode whitespace other than U+0020 (regular space).
+ * U+00A0  NO-BREAK SPACE
+ * U+1680  OGHAM SPACE MARK
+ * U+2000-U+200A  en quad through hair space
+ * U+202F  NARROW NO-BREAK SPACE
+ * U+205F  MEDIUM MATHEMATICAL SPACE
+ * U+3000  IDEOGRAPHIC SPACE
+ */
+const UNICODE_SPACE_RE = /[\u00A0\u1680\u2000-\u200A\u202F\u205F\u3000]/g;
+
 class LineEndWidget extends WidgetType {
     eq(_other: LineEndWidget): boolean {
         return true;
@@ -45,6 +56,7 @@ function buildDecorations(
     view: EditorView,
     showLineEndings: boolean,
     showHardLineBreaks: boolean,
+    showUnicodeWhitespace: boolean,
 ): DecorationSet {
     try {
         const docLength = view.state.doc.length;
@@ -59,6 +71,23 @@ function buildDecorations(
             const rangeEnd = Math.min(to, docLength);
             while (pos <= rangeEnd) {
                 const line = view.state.doc.lineAt(pos);
+
+                // Unicode whitespace: mark inline, shown on all lines including
+                // the cursor line (these aren't at the line end, no reason to hide).
+                if (showUnicodeWhitespace) {
+                    for (const match of line.text.matchAll(UNICODE_SPACE_RE)) {
+                        const mFrom = line.from + (match.index ?? 0);
+                        widgets.push(
+                            Decoration.mark({
+                                class: "swcm6-unicode-space",
+                            }).range(mFrom, mFrom + match[0].length),
+                        );
+                    }
+                }
+
+                // Line-end markers: skip the cursor line to avoid crowding the
+                // insertion point. Marks above are added first so the array
+                // stays sorted (inline positions < line.to).
                 if (line.number !== activeLineNum) {
                     if (showHardLineBreaks && HARD_BREAK_RE.test(line.text)) {
                         widgets.push(
@@ -76,6 +105,7 @@ function buildDecorations(
                         );
                     }
                 }
+
                 if (line.to >= rangeEnd) break;
                 pos = line.to + 1;
             }
@@ -87,8 +117,14 @@ function buildDecorations(
 }
 
 export function markersExtension(settings: SWSettings): Extension {
-    const { showLineEndings, showHardLineBreaks } = settings;
+    const { showLineEndings, showHardLineBreaks, showUnicodeWhitespace } =
+        settings;
     return createWhitespacePlugin((view) =>
-        buildDecorations(view, showLineEndings, showHardLineBreaks),
+        buildDecorations(
+            view,
+            showLineEndings,
+            showHardLineBreaks,
+            showUnicodeWhitespace,
+        ),
     );
 }
