@@ -8,14 +8,12 @@ export interface SWSettings {
     // Structural
     showBlockquoteMarkers: boolean;
     outlineListMarkers: boolean;
-    // Space dot contexts (CSS only — driven by cmExtensionEnabled)
+    // Space dot contexts
     showFrontmatterWhitespace: boolean;
     showTableWhitespace: boolean;
     showCodeblockWhitespace: boolean;
     showAllCodeblockWhitespace: boolean;
     showAllWhitespace: boolean;
-    // Computed — not persisted
-    cmExtensionEnabled?: boolean;
 }
 
 declare module "obsidian" {

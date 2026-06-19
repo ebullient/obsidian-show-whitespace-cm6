@@ -3,7 +3,6 @@ import {
     EditorState,
     type Extension,
 } from "@codemirror/state";
-import { highlightWhitespace } from "@codemirror/view";
 import { type Command, debounce, Plugin } from "obsidian";
 import type { SWSettings } from "./@types/settings";
 import { markersExtension } from "./markers-Extension";
@@ -82,24 +81,11 @@ export class ShowWhitespacePlugin extends Plugin {
     }
 
     handleExtension(): void {
-        console.debug(
-            "(SW-CM6) cmExtensionEnabled",
-            this.settings.cmExtensionEnabled,
-        );
         this.cmExtension.length = 0;
         // Always active: prevents Obsidian's setEphemeralState crash on Source mode entry
         this.cmExtension.push(clampSelectionFilter);
         if (this.settings.enabled) {
-            if (this.settings.cmExtensionEnabled) {
-                this.cmExtension.push(highlightWhitespace());
-            }
-            if (
-                this.settings.showLineEndings ||
-                this.settings.showHardLineBreaks ||
-                this.settings.showUnicodeWhitespace
-            ) {
-                this.cmExtension.push(markersExtension(this.settings));
-            }
+            this.cmExtension.push(markersExtension(this.settings));
         }
         this.app.workspace.updateOptions();
     }
@@ -168,9 +154,7 @@ export class ShowWhitespacePlugin extends Plugin {
                 DEFAULT_SETTINGS,
                 externalData,
             );
-            this.computeCMExtensionEnabled(externalSettings);
 
-            // Check if any setting actually changed
             const hasChanges = (
                 Object.keys(externalSettings) as Array<keyof SWSettings>
             ).some((key) => this.settings[key] !== externalSettings[key]);
@@ -198,52 +182,23 @@ export class ShowWhitespacePlugin extends Plugin {
         if (!this.settings) {
             const options = (await this.loadData()) as Partial<SWSettings>;
             this.settings = Object.assign({}, DEFAULT_SETTINGS, options);
-            this.computeCMExtensionEnabled(this.settings);
             console.debug("settings loaded", this.settings);
         }
     }
 
-    computeCMExtensionEnabled(settings: SWSettings) {
-        settings.cmExtensionEnabled =
-            settings.enabled &&
-            (settings.showAllWhitespace ||
-                settings.showFrontmatterWhitespace ||
-                settings.showCodeblockWhitespace ||
-                settings.showAllCodeblockWhitespace ||
-                settings.showTableWhitespace);
-    }
-
     applySettings(newSettings: SWSettings): void {
-        const wasEnabled = this.settings.enabled;
-        const wasCMExtensionEnabled = this.settings.cmExtensionEnabled;
-        const wasShowLineEndings = this.settings.showLineEndings;
-        const wasShowHardLineBreaks = this.settings.showHardLineBreaks;
-        const wasShowUnicodeWhitespace = this.settings.showUnicodeWhitespace;
         this.settings = newSettings;
-
-        if (
-            wasEnabled !== this.settings.enabled ||
-            wasCMExtensionEnabled !== this.settings.cmExtensionEnabled ||
-            wasShowLineEndings !== this.settings.showLineEndings ||
-            wasShowHardLineBreaks !== this.settings.showHardLineBreaks ||
-            wasShowUnicodeWhitespace !== this.settings.showUnicodeWhitespace
-        ) {
-            this.handleExtension();
-        }
+        this.handleExtension();
         this.updateClasses();
     }
 
     async updateSettings(newSettings: SWSettings): Promise<void> {
-        const mergedSettings = Object.assign({}, this.settings, newSettings);
-        this.computeCMExtensionEnabled(mergedSettings);
-        this.applySettings(mergedSettings);
+        this.applySettings(Object.assign({}, this.settings, newSettings));
         await this.saveSettings();
         console.debug("(SW-CM6) settings and classes updated", this.settings);
     }
 
     async saveSettings(): Promise<void> {
-        // cmExtensionEnabled is computed — don't persist it
-        const { cmExtensionEnabled: _derived, ...dataToSave } = this.settings;
-        await this.saveData(dataToSave);
+        await this.saveData(this.settings);
     }
 }

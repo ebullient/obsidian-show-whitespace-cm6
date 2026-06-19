@@ -54,6 +54,7 @@ class HardBreakWidget extends WidgetType {
 
 function buildDecorations(
     view: EditorView,
+    showSpaces: boolean,
     showLineEndings: boolean,
     showHardLineBreaks: boolean,
     showUnicodeWhitespace: boolean,
@@ -72,8 +73,20 @@ function buildDecorations(
             while (pos <= rangeEnd) {
                 const line = view.state.doc.lineAt(pos);
 
-                // Unicode whitespace: mark inline, shown on all lines including
-                // the cursor line (these aren't at the line end, no reason to hide).
+                // Regular spaces: cm-highlightSpace is what the existing CSS
+                // context selectors target (frontmatter, tables, code blocks).
+                if (showSpaces) {
+                    for (let i = 0; i < line.text.length; i++) {
+                        if (line.text[i] === " ") {
+                            widgets.push(
+                                Decoration.mark({
+                                    class: "cm-highlightSpace",
+                                }).range(line.from + i, line.from + i + 1),
+                            );
+                        }
+                    }
+                }
+
                 if (showUnicodeWhitespace) {
                     for (const match of line.text.matchAll(UNICODE_SPACE_RE)) {
                         const mFrom = line.from + (match.index ?? 0);
@@ -86,8 +99,7 @@ function buildDecorations(
                 }
 
                 // Line-end markers: skip the cursor line to avoid crowding the
-                // insertion point. Marks above are added first so the array
-                // stays sorted (inline positions < line.to).
+                // insertion point.
                 if (line.number !== activeLineNum) {
                     if (showHardLineBreaks && HARD_BREAK_RE.test(line.text)) {
                         widgets.push(
@@ -117,11 +129,26 @@ function buildDecorations(
 }
 
 export function markersExtension(settings: SWSettings): Extension {
-    const { showLineEndings, showHardLineBreaks, showUnicodeWhitespace } =
-        settings;
+    const {
+        showLineEndings,
+        showHardLineBreaks,
+        showUnicodeWhitespace,
+        showAllWhitespace,
+        showFrontmatterWhitespace,
+        showCodeblockWhitespace,
+        showAllCodeblockWhitespace,
+        showTableWhitespace,
+    } = settings;
+    const showSpaces =
+        showAllWhitespace ||
+        showFrontmatterWhitespace ||
+        showCodeblockWhitespace ||
+        showAllCodeblockWhitespace ||
+        showTableWhitespace;
     return createWhitespacePlugin((view) =>
         buildDecorations(
             view,
+            showSpaces,
             showLineEndings,
             showHardLineBreaks,
             showUnicodeWhitespace,
