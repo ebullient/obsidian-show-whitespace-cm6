@@ -83,6 +83,12 @@ function buildDecorations(
                                     class: "cm-highlightSpace",
                                 }).range(line.from + i, line.from + i + 1),
                             );
+                        } else if (line.text[i] === "\t") {
+                            widgets.push(
+                                Decoration.mark({
+                                    class: "cm-highlightTab",
+                                }).range(line.from + i, line.from + i + 1),
+                            );
                         }
                     }
                 }

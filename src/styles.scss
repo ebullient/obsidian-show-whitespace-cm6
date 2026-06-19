@@ -1,21 +1,20 @@
-
 .theme-dark {
   --swcm6-whitespace-color: var(--color-base-40);
   --swcm6-outline-list-markers-color: rgba(var(--mono-rgb-100), 0.05);
-  --swcm6-space-bg-image: radial-gradient(circle at 50% 55%, var(--color-base-50) 10%, transparent 2%);
-  --swcm6-unicode-space-bg-image: radial-gradient(circle at 50% 55%, var(--color-orange, #e67e22) 10%, transparent 2%);
+  --swcm6-tab-bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="20"><path stroke="%23666" stroke-width="1" fill="none" d="M1 10H196L190 5M190 15L196 10M197 4L197 16"/></svg>');
 }
 
 .theme-light {
   --swcm6-whitespace-color: var(--color-base-35);
   --swcm6-outline-list-markers-color: rgba(var(--mono-rgb-100), 0.03);
-  --swcm6-space-bg-image: radial-gradient(circle at 50% 55%, var(--color-base-30) 10%, transparent 2%);
-  --swcm6-unicode-space-bg-image: radial-gradient(circle at 50% 55%, var(--color-orange, #e67e22) 10%, transparent 2%);
+  --swcm6-tab-bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="20"><path stroke="%23aaa" stroke-width="1" fill="none" d="M1 10H196L190 5M190 15L196 10M197 4L197 16"/></svg>');
 }
 
 body:not(.swcm6-nix-plugin-styles) {
   --line-end: '¬';
   --hard-break: '↲';
+  --swcm6-space-bg-image: radial-gradient(circle at 50% 55%, var(--swcm6-whitespace-color) 10%, transparent 2%);
+  --swcm6-unicode-space-bg-image: radial-gradient(circle at 50% 55%, var(--swcm6-whitespace-color) 10%, transparent 2%);
 
   // Always show blockquote markers...
   &.swcm6-show-blockquote-markers {
@@ -39,44 +38,61 @@ body:not(.swcm6-nix-plugin-styles) {
     }
   }
 
-  // Suppress CM6's built-in global dot (@codemirror/view injects its own background-image
-  // for .cm-highlightSpace via StyleModule/adoptedStyleSheets, which can win over a regular
-  // linked stylesheet even at lower specificity in some browsers). !important is required.
+  @mixin show-whitespace {
+    .cm-highlightSpace {
+      background-image: var(--swcm6-space-bg-image) !important;
+    }
+
+    .cm-highlightTab {
+      background-image: var(--swcm6-tab-bg-image) !important;
+      background-size: auto 100%;
+      background-position: right 90%;
+      background-repeat: no-repeat;
+    }
+  }
+
+  // Suppress CM6's built-in styles (@codemirror/view injects background-image for both
+  // .cm-highlightSpace and .cm-highlightTab via StyleModule/adoptedStyleSheets, which can
+  // win over a regular linked stylesheet even at lower specificity). !important is required.
   .cm-highlightSpace {
     background-image: none !important;
   }
 
+  .cm-highlightTab {
+    background-image: none !important;
+  }
+
   // Show all whitespace everywhere
-  &.swcm6-show-all-whitespace .cm-highlightSpace {
-    background-image: var(--swcm6-space-bg-image) !important;
+  &.swcm6-show-all-whitespace {
+    @include show-whitespace;
   }
 
   // Show whitespace only in YAML frontmatter (Source mode; Live Preview uses the Properties panel)
-  &.swcm6-show-frontmatter-whitespace .cm-hmd-frontmatter .cm-highlightSpace {
-    background-image: var(--swcm6-space-bg-image) !important;
+  &.swcm6-show-frontmatter-whitespace .cm-hmd-frontmatter {
+    @include show-whitespace;
   }
 
   // Show whitespace only in table rows
-  &.swcm6-show-table-whitespace .HyperMD-table-row .cm-highlightSpace {
-    background-image: var(--swcm6-space-bg-image) !important;
+  &.swcm6-show-table-whitespace .HyperMD-table-row {
+    @include show-whitespace;
   }
 
   // Show leading/trailing whitespace in code blocks
-  &.swcm6-show-codeblock-whitespace .HyperMD-codeblock .cm-highlightSpace {
-    background-image: var(--swcm6-space-bg-image) !important;
+  &.swcm6-show-codeblock-whitespace .HyperMD-codeblock {
+    @include show-whitespace;
   }
 
   // Show all whitespace in code blocks (overrides above)
-  &.swcm6-show-all-codeblock-whitespace .HyperMD-codeblock .cm-highlightSpace {
-    background-image: var(--swcm6-space-bg-image) !important;
+  &.swcm6-show-all-codeblock-whitespace .HyperMD-codeblock {
+    @include show-whitespace;
   }
 
   // Unicode whitespace (NBSP, thin space, etc.) — always visible, distinct color
   .swcm6-unicode-space {
     text-decoration: underline;
-    text-decoration-color: var(--color-orange, #e67e22);
-    text-decoration-style: solid;
-    text-underline-offset: 2px;
+    text-decoration-color: var(--color-purple);
+    text-decoration-style: dotted;
+    text-underline-offset: 3px;
   }
 
   .swcm6-line-end-marker::after {
