@@ -91,6 +91,15 @@ function buildDecorations(
                             );
                         }
                     }
+                    const trailingMatch = /\s+$/.exec(line.text);
+                    if (trailingMatch) {
+                        const tFrom = line.from + trailingMatch.index;
+                        widgets.push(
+                            Decoration.mark({
+                                class: "cm-trailingSpace",
+                            }).range(tFrom, line.to),
+                        );
+                    }
                 }
 
                 if (showUnicodeWhitespace) {
