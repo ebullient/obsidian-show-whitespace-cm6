@@ -30,7 +30,7 @@
     "@biomejs/biome": "2.4.15",
     "@types/codemirror": "5.60.17",
     "@types/node": "^25.3.5",
-    "@typescript-eslint/parser": "^8.59.2",
+    "@typescript-eslint/parser": "^8.60.0",
     "auto-changelog": "^2.5.1",
     "esbuild": "0.28.0",
     "esbuild-sass-plugin": "^3.7.0",
