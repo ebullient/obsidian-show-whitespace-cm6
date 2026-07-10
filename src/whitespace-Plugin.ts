@@ -50,6 +50,7 @@ export const DEFAULT_SETTINGS: SWSettings = {
     showCodeblockWhitespace: false,
     showFrontmatterWhitespace: true,
     showTableWhitespace: true,
+    showSourceOnlyWhitespace: false,
 };
 
 export class ShowWhitespacePlugin extends Plugin {
@@ -123,6 +124,9 @@ export class ShowWhitespacePlugin extends Plugin {
             }
             if (this.settings.outlineListMarkers) {
                 this.classList.push("swcm6-outline-list-markers");
+            }
+            if (this.settings.showSourceOnlyWhitespace) {
+                this.classList.push("swcm6-show-source-only-whitespace");
             }
         }
         activeDocument.body.addClasses(this.classList);

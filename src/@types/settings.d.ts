@@ -13,6 +13,7 @@ export interface SWSettings {
     showCodeblockWhitespace: boolean;
     showAllCodeblockWhitespace: boolean;
     showAllWhitespace: boolean;
+    showSourceOnlyWhitespace: boolean;
 }
 
 declare module "obsidian" {

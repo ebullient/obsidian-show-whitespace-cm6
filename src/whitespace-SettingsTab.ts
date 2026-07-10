@@ -35,9 +35,9 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
             .setDesc(desc)
             .addToggle((toggle) =>
                 toggle
-                    .setValue(this.newSettings[key] as boolean)
+                    .setValue(this.newSettings[key])
                     .onChange(async (value) => {
-                        (this.newSettings[key] as boolean) = value;
+                        this.newSettings[key] = value;
                         this.drawElements();
                     }),
             );
@@ -87,6 +87,11 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
             .setName(i18n.markersSection.name);
         this.containerEl.createEl("p", { text: i18n.markersSection.desc });
 
+        this.toggle(
+            "showSourceOnlyWhitespace",
+            i18n.showSourceOnlyWhitespace.name,
+            i18n.showSourceOnlyWhitespace.desc,
+        );
         this.toggle(
             "showLineEndings",
             i18n.showLineEndings.name,

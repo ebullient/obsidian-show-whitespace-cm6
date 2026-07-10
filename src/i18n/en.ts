@@ -66,4 +66,8 @@ export const en = {
         name: "Everywhere",
         desc: "Show space dots for all spaces in the document, including between words.",
     },
+    showSourceOnlyWhitespace: {
+        name: "Source mode only",
+        desc: "Only show whitespace highlighting in Source mode, hiding it in Live Preview.",
+    },
 };
