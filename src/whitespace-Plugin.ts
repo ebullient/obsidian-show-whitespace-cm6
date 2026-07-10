@@ -44,7 +44,6 @@ export const DEFAULT_SETTINGS: SWSettings = {
     showUnicodeWhitespace: true,
     // Structural
     outlineListMarkers: false,
-    showBlockquoteMarkers: false,
     // Space dot contexts
     showAllCodeblockWhitespace: false,
     showAllWhitespace: false,
@@ -101,9 +100,6 @@ export class ShowWhitespacePlugin extends Plugin {
             this.classList.push("swcm6-nix-plugin-styles");
         }
         if (this.settings.enabled) {
-            if (this.settings.showBlockquoteMarkers) {
-                this.classList.push("swcm6-show-blockquote-markers");
-            }
             if (this.settings.showCodeblockWhitespace) {
                 this.classList.push("swcm6-show-codeblock-whitespace");
             }

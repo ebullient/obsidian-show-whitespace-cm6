@@ -37,10 +37,6 @@ export const en = {
     structuralSection: {
         name: "Structural",
     },
-    showBlockquoteMarkers: {
-        name: "Blockquote markers",
-        desc: "Always display the leading '>' for blockquotes in Live Preview mode.",
-    },
     highlightListMarkers: {
         name: "Highlight list markers",
         desc: "Add a visual style to the space reserved by list markers (e.g., '-', '1.').",

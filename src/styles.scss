@@ -16,15 +16,6 @@ body:not(.swcm6-nix-plugin-styles) {
   --swcm6-space-bg-image: radial-gradient(circle at 50% 55%, var(--swcm6-whitespace-color) 10%, transparent 2%);
   --swcm6-unicode-space-bg-image: radial-gradient(circle at 50% 55%, var(--swcm6-whitespace-color) 10%, transparent 2%);
 
-  // Always show blockquote markers...
-  &.swcm6-show-blockquote-markers {
-    .markdown-source-view.mod-cm6 {
-      .HyperMD-quote .cm-transparent {
-        color: var(--swcm6-whitespace-color);
-      }
-    }
-  }
-
   // Always show the space allocated for list markers...
   &.swcm6-outline-list-markers {
     .markdown-source-view.mod-cm6 .cm-line {

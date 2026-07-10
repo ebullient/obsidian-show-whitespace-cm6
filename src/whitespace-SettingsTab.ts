@@ -109,11 +109,6 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
             .setName(i18n.structuralSection.name);
 
         this.toggle(
-            "showBlockquoteMarkers",
-            i18n.showBlockquoteMarkers.name,
-            i18n.showBlockquoteMarkers.desc,
-        );
-        this.toggle(
             "outlineListMarkers",
             i18n.highlightListMarkers.name,
             i18n.highlightListMarkers.desc,
