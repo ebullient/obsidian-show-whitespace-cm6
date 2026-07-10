@@ -62,6 +62,25 @@ body:not(.swcm6-nix-plugin-styles) {
     background-image: none !important;
   }
 
+  // Obsidian wraps trailing whitespace belonging to a hard line break in its
+  // own .cm-trailing-space-a/-b (alternating) or .cm-trailing-space-new-line
+  // classes. That whitespace is meaningful Markdown syntax, not an error, so
+  // suppress CM6's red cm-trailingSpace background there — the hard-break
+  // marker glyph already indicates it.
+  .cm-trailing-space-a .cm-trailingSpace,
+  .cm-trailing-space-b .cm-trailingSpace,
+  .cm-trailing-space-new-line .cm-trailingSpace {
+    background-color: transparent !important;
+  }
+
+  // Obsidian doesn't apply the trailing-space-* wrapper classes inside code
+  // blocks, so trailing whitespace there (hard-break or not) never gets the
+  // suppression above. Trailing whitespace in code is often intentional
+  // formatting rather than an error — suppress the red background entirely.
+  .cm-hmd-codeblock .cm-trailingSpace {
+    background-color: transparent !important;
+  }
+
   // Show all whitespace everywhere
   &.swcm6-show-all-whitespace {
     @include show-whitespace;
@@ -77,9 +96,18 @@ body:not(.swcm6-nix-plugin-styles) {
     @include show-whitespace;
   }
 
-  // Show leading/trailing whitespace in code blocks
+  // Show leading/trailing whitespace in code blocks. Obsidian wraps leading
+  // whitespace in one or more .cm-indent/.cm-indent-spacing spans and marks
+  // all trailing whitespace with .cm-trailingSpace (regardless of hard-break
+  // status) — so scoping to those classes, rather than the whole
+  // .HyperMD-codeblock, is what actually limits this to leading/trailing as
+  // the setting promises.
   &.swcm6-show-codeblock-whitespace .HyperMD-codeblock {
-    @include show-whitespace;
+    .cm-indent,
+    .cm-indent-spacing,
+    .cm-trailingSpace {
+      @include show-whitespace;
+    }
   }
 
   // Show all whitespace in code blocks (overrides above)
@@ -90,7 +118,7 @@ body:not(.swcm6-nix-plugin-styles) {
   // Unicode whitespace (NBSP, thin space, etc.) — always visible, distinct color
   .swcm6-unicode-space {
     text-decoration: underline;
-    text-decoration-color: var(--color-purple);
+    text-decoration-color: #ff332255;
     text-decoration-style: dotted;
     text-underline-offset: 3px;
   }

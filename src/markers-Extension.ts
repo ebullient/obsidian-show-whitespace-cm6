@@ -3,10 +3,12 @@ import {
     Decoration,
     type DecorationSet,
     type EditorView,
+    MatchDecorator,
+    ViewPlugin,
+    type ViewUpdate,
     WidgetType,
 } from "@codemirror/view";
 import type { SWSettings } from "./@types/settings";
-import { createWhitespacePlugin } from "./debounce-util";
 
 /** Lines ending in two or more spaces are Markdown hard line breaks. */
 const HARD_BREAK_RE = / {2,}$/;
@@ -21,6 +23,48 @@ const HARD_BREAK_RE = / {2,}$/;
  * U+3000  IDEOGRAPHIC SPACE
  */
 const UNICODE_SPACE_RE = /[\u00A0\u1680\u2000-\u200A\u202F\u205F\u3000]/g;
+
+// cm-highlightSpace/cm-highlightTab are what the existing CSS context
+// selectors target (frontmatter, tables, code blocks).
+const spaceDeco = Decoration.mark({ class: "cm-highlightSpace" });
+const tabDeco = Decoration.mark({ class: "cm-highlightTab" });
+const trailingDeco = Decoration.mark({ class: "cm-trailingSpace" });
+const unicodeSpaceDeco = Decoration.mark({ class: "swcm6-unicode-space" });
+
+const whitespaceMatcher = new MatchDecorator({
+    regexp: /\t| /g,
+    decoration: (match) => (match[0] === "\t" ? tabDeco : spaceDeco),
+    boundary: /\S/,
+});
+
+const trailingMatcher = new MatchDecorator({
+    regexp: /\s+$/g,
+    decoration: trailingDeco,
+});
+
+const unicodeMatcher = new MatchDecorator({
+    regexp: UNICODE_SPACE_RE,
+    decoration: unicodeSpaceDeco,
+});
+
+/** Wraps a MatchDecorator in a ViewPlugin that keeps its decorations incrementally updated. */
+function matcher(decorator: MatchDecorator): Extension {
+    return ViewPlugin.fromClass(
+        class {
+            decorations: DecorationSet;
+            constructor(view: EditorView) {
+                this.decorations = decorator.createDeco(view);
+            }
+            update(update: ViewUpdate): void {
+                this.decorations = decorator.updateDeco(
+                    update,
+                    this.decorations,
+                );
+            }
+        },
+        { decorations: (v) => v.decorations },
+    );
+}
 
 class LineEndWidget extends WidgetType {
     eq(_other: LineEndWidget): boolean {
@@ -52,12 +96,10 @@ class HardBreakWidget extends WidgetType {
     }
 }
 
-function buildDecorations(
+function buildWidgetDecorations(
     view: EditorView,
-    showSpaces: boolean,
     showLineEndings: boolean,
     showHardLineBreaks: boolean,
-    showUnicodeWhitespace: boolean,
 ): DecorationSet {
     try {
         const docLength = view.state.doc.length;
@@ -72,46 +114,6 @@ function buildDecorations(
             const rangeEnd = Math.min(to, docLength);
             while (pos <= rangeEnd) {
                 const line = view.state.doc.lineAt(pos);
-
-                // Regular spaces: cm-highlightSpace is what the existing CSS
-                // context selectors target (frontmatter, tables, code blocks).
-                if (showSpaces) {
-                    for (let i = 0; i < line.text.length; i++) {
-                        if (line.text[i] === " ") {
-                            widgets.push(
-                                Decoration.mark({
-                                    class: "cm-highlightSpace",
-                                }).range(line.from + i, line.from + i + 1),
-                            );
-                        } else if (line.text[i] === "\t") {
-                            widgets.push(
-                                Decoration.mark({
-                                    class: "cm-highlightTab",
-                                }).range(line.from + i, line.from + i + 1),
-                            );
-                        }
-                    }
-                    const trailingMatch = /\s+$/.exec(line.text);
-                    if (trailingMatch) {
-                        const tFrom = line.from + trailingMatch.index;
-                        widgets.push(
-                            Decoration.mark({
-                                class: "cm-trailingSpace",
-                            }).range(tFrom, line.to),
-                        );
-                    }
-                }
-
-                if (showUnicodeWhitespace) {
-                    for (const match of line.text.matchAll(UNICODE_SPACE_RE)) {
-                        const mFrom = line.from + (match.index ?? 0);
-                        widgets.push(
-                            Decoration.mark({
-                                class: "swcm6-unicode-space",
-                            }).range(mFrom, mFrom + match[0].length),
-                        );
-                    }
-                }
 
                 // Line-end markers: skip the cursor line to avoid crowding the
                 // insertion point.
@@ -143,7 +145,39 @@ function buildDecorations(
     }
 }
 
-export function markersExtension(settings: SWSettings): Extension {
+function widgetPlugin(
+    showLineEndings: boolean,
+    showHardLineBreaks: boolean,
+): Extension {
+    return ViewPlugin.fromClass(
+        class {
+            decorations: DecorationSet;
+            constructor(view: EditorView) {
+                this.decorations = buildWidgetDecorations(
+                    view,
+                    showLineEndings,
+                    showHardLineBreaks,
+                );
+            }
+            update(update: ViewUpdate): void {
+                if (
+                    update.docChanged ||
+                    update.selectionSet ||
+                    update.viewportChanged
+                ) {
+                    this.decorations = buildWidgetDecorations(
+                        update.view,
+                        showLineEndings,
+                        showHardLineBreaks,
+                    );
+                }
+            }
+        },
+        { decorations: (v) => v.decorations },
+    );
+}
+
+export function markersExtension(settings: SWSettings): Extension[] {
     const {
         showLineEndings,
         showHardLineBreaks,
@@ -160,13 +194,16 @@ export function markersExtension(settings: SWSettings): Extension {
         showCodeblockWhitespace ||
         showAllCodeblockWhitespace ||
         showTableWhitespace;
-    return createWhitespacePlugin((view) =>
-        buildDecorations(
-            view,
-            showSpaces,
-            showLineEndings,
-            showHardLineBreaks,
-            showUnicodeWhitespace,
-        ),
-    );
+
+    const extensions: Extension[] = [];
+    if (showSpaces) {
+        extensions.push(matcher(whitespaceMatcher), matcher(trailingMatcher));
+    }
+    if (showUnicodeWhitespace) {
+        extensions.push(matcher(unicodeMatcher));
+    }
+    if (showLineEndings || showHardLineBreaks) {
+        extensions.push(widgetPlugin(showLineEndings, showHardLineBreaks));
+    }
+    return extensions;
 }
