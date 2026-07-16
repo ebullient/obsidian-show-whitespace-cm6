@@ -1,4 +1,11 @@
-import { type App, getLanguage, PluginSettingTab, Setting } from "obsidian";
+import {
+    type App,
+    getLanguage,
+    PluginSettingTab,
+    requireApiVersion,
+    Setting,
+    type SettingDefinitionItem,
+} from "obsidian";
 import type { SWSettings } from "./@types/settings";
 import { getTranslate } from "./i18n";
 import type ShowWhitespacePlugin from "./main";
@@ -27,6 +34,155 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
             JSON.stringify(this.plugin.settings),
         ) as SWSettings;
         this.drawElements();
+    }
+
+    getSettingDefinitions(): SettingDefinitionItem[] {
+        if (!requireApiVersion("1.13.0")) return [];
+
+        if (!this.newSettings) {
+            this.newSettings = JSON.parse(
+                JSON.stringify(this.plugin.settings),
+            ) as SWSettings;
+        }
+
+        const id = this.plugin.manifest.id;
+        const i18n = getTranslate(getLanguage());
+        const name = i18n.manifestName || this.plugin.manifest.name;
+        const toggle = (
+            key: keyof SWSettings,
+            settingName: string,
+            desc: string,
+        ): SettingDefinitionItem => ({
+            name: settingName,
+            desc,
+            render: (setting) => {
+                setting.addToggle((control) =>
+                    control
+                        .setValue(this.newSettings[key])
+                        .onChange((value) => {
+                            this.newSettings[key] = value;
+                            // eslint-disable-next-line obsidianmd/no-unsupported-api -- guarded by requireApiVersion above
+                            this.update();
+                        }),
+                );
+            },
+        });
+
+        return [
+            {
+                name,
+                render: (setting) => {
+                    this.containerEl.addClass(id);
+                    setting.setHeading();
+                },
+            },
+            {
+                name: i18n.saveSettings.name,
+                render: (setting) => {
+                    setting
+                        .setClass(`${id}-save-reset`)
+                        .addButton((button) =>
+                            button
+                                .setIcon("reset")
+                                .setTooltip(i18n.saveSettings.resetBtn.tooltip)
+                                .onClick(() => {
+                                    this.newSettings = JSON.parse(
+                                        JSON.stringify(this.plugin.settings),
+                                    ) as SWSettings;
+                                    // eslint-disable-next-line obsidianmd/no-unsupported-api -- guarded by requireApiVersion above
+                                    this.update();
+                                    console.debug(
+                                        "(SW-CM6) Configuration reset",
+                                    );
+                                }),
+                        )
+                        .addButton((button) => {
+                            button
+                                .setIcon("save")
+                                .setTooltip(i18n.saveSettings.saveBtn.tooltip)
+                                .onClick(async () => {
+                                    await this.save();
+                                });
+                            this.saveButton = button.buttonEl;
+                        });
+                },
+            },
+            toggle(
+                "disablePluginStyles",
+                i18n.suppressPluginStyles.name,
+                i18n.suppressPluginStyles.desc,
+            ),
+            {
+                name: i18n.markersSection.name,
+                desc: i18n.markersSection.desc,
+                render: (setting) => {
+                    setting.setHeading();
+                },
+            },
+            toggle(
+                "showSourceOnlyWhitespace",
+                i18n.showSourceOnlyWhitespace.name,
+                i18n.showSourceOnlyWhitespace.desc,
+            ),
+            toggle(
+                "showLineEndings",
+                i18n.showLineEndings.name,
+                i18n.showLineEndings.desc,
+            ),
+            toggle(
+                "showHardLineBreaks",
+                i18n.showHardLineBreaks.name,
+                i18n.showHardLineBreaks.desc,
+            ),
+            toggle(
+                "showUnicodeWhitespace",
+                i18n.showUnicodeWhitespace.name,
+                i18n.showUnicodeWhitespace.desc,
+            ),
+            {
+                name: i18n.structuralSection.name,
+                render: (setting) => {
+                    setting.setHeading();
+                },
+            },
+            toggle(
+                "outlineListMarkers",
+                i18n.highlightListMarkers.name,
+                i18n.highlightListMarkers.desc,
+            ),
+            {
+                name: i18n.spaceContextsSection.name,
+                desc: i18n.spaceContextsSection.desc,
+                render: (setting) => {
+                    setting.setHeading();
+                },
+            },
+            toggle(
+                "showFrontmatterWhitespace",
+                i18n.showFrontmatterWhitespace.name,
+                i18n.showFrontmatterWhitespace.desc,
+            ),
+            toggle(
+                "showTableWhitespace",
+                i18n.showTableWhitespace.name,
+                i18n.showTableWhitespace.desc,
+            ),
+            toggle(
+                "showCodeblockWhitespace",
+                i18n.showCodeBlockWhitespace.name,
+                i18n.showCodeBlockWhitespace.desc,
+            ),
+            toggle(
+                "showAllCodeblockWhitespace",
+                i18n.showAllCodeBlockWhitespace.name,
+                i18n.showAllCodeBlockWhitespace.desc,
+            ),
+            toggle(
+                "showAllWhitespace",
+                i18n.showAllWhitespace.name,
+                i18n.showAllWhitespace.desc,
+            ),
+        ];
     }
 
     private toggle(key: keyof SWSettings, name: string, desc: string): void {
