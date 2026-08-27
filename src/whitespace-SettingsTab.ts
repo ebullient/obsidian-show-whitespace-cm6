@@ -1,12 +1,16 @@
-import { type App, getLanguage, PluginSettingTab, Setting } from "obsidian";
+import {
+    type App,
+    getLanguage,
+    PluginSettingTab,
+    type Setting,
+    type SettingDefinitionItem,
+} from "obsidian";
 import type { SWSettings } from "./@types/settings";
 import { getTranslate } from "./i18n";
 import type ShowWhitespacePlugin from "./main";
 
 export class ShowWhitespaceSettingsTab extends PluginSettingTab {
     plugin: ShowWhitespacePlugin;
-    newSettings: SWSettings;
-    saveButton: HTMLElement;
 
     constructor(app: App, plugin: ShowWhitespacePlugin) {
         super(app, plugin);
@@ -14,148 +18,130 @@ export class ShowWhitespaceSettingsTab extends PluginSettingTab {
         this.icon = "eye";
     }
 
-    async save() {
-        await this.plugin.updateSettings(this.newSettings);
+    getControlValue(key: string): unknown {
+        return this.plugin.settings[key as keyof SWSettings];
     }
 
-    display(): void {
-        void this.plugin.loadSettings().then(() => this.reset());
+    async setControlValue(key: string, value: unknown): Promise<void> {
+        await this.plugin.updateSettings({
+            ...this.plugin.settings,
+            [key]: value,
+        });
     }
 
-    async reset(): Promise<void> {
-        this.newSettings = JSON.parse(
-            JSON.stringify(this.plugin.settings),
-        ) as SWSettings;
-        this.drawElements();
-    }
-
-    private toggle(key: keyof SWSettings, name: string, desc: string): void {
-        new Setting(this.containerEl)
-            .setName(name)
-            .setDesc(desc)
-            .addToggle((toggle) =>
-                toggle
-                    .setValue(this.newSettings[key])
-                    .onChange(async (value) => {
-                        this.newSettings[key] = value;
-                        this.drawElements();
-                    }),
-            );
-    }
-
-    drawElements(): void {
-        const id = this.plugin.manifest.id;
+    getSettingDefinitions(): SettingDefinitionItem[] {
         const lang = getLanguage();
         const i18n = getTranslate(lang);
-        const name = i18n.manifestName || this.plugin.manifest.name;
 
-        this.containerEl.empty();
-        this.containerEl.addClass(id);
-        new Setting(this.containerEl).setHeading().setName(name);
+        return [
+            {
+                name: i18n.suppressPluginStyles.name,
+                desc: i18n.suppressPluginStyles.desc,
+                control: { type: "toggle", key: "disablePluginStyles" },
+            },
+            {
+                name: i18n.showSourceOnlyWhitespace.name,
+                desc: i18n.showSourceOnlyWhitespace.desc,
+                control: {
+                    type: "toggle",
+                    key: "showSourceOnlyWhitespace",
+                },
+            },
+            {
+                type: "group",
+                heading: i18n.markersSection.name,
+                items: [
+                    {
+                        name: "",
+                        searchable: false,
+                        render: (setting: Setting) => {
+                            setting.descEl.setText(i18n.markersSection.desc);
+                        },
+                    },
+                    {
+                        name: i18n.showLineEndings.name,
+                        desc: i18n.showLineEndings.desc,
+                        control: { type: "toggle", key: "showLineEndings" },
+                    },
+                    {
+                        name: i18n.showHardLineBreaks.name,
+                        desc: i18n.showHardLineBreaks.desc,
+                        control: {
+                            type: "toggle",
+                            key: "showHardLineBreaks",
+                        },
+                    },
+                    {
+                        name: i18n.showUnicodeWhitespace.name,
+                        desc: i18n.showUnicodeWhitespace.desc,
+                        control: {
+                            type: "toggle",
+                            key: "showUnicodeWhitespace",
+                        },
+                    },
+                    {
+                        name: i18n.highlightListMarkers.name,
+                        desc: i18n.highlightListMarkers.desc,
+                        control: { type: "toggle", key: "outlineListMarkers" },
+                    },
+                ],
+            },
 
-        new Setting(this.containerEl)
-            .setName(i18n.saveSettings.name)
-            .setClass(`${id}-save-reset`)
-            .addButton((button) =>
-                button
-                    .setIcon("reset")
-                    .setTooltip(i18n.saveSettings.resetBtn.tooltip)
-                    .onClick(async () => {
-                        await this.reset();
-                        console.debug("(SW-CM6) Configuration reset");
-                    }),
-            )
-            .addButton((button) => {
-                button
-                    .setIcon("save")
-                    .setTooltip(i18n.saveSettings.saveBtn.tooltip)
-                    .onClick(async () => {
-                        await this.save();
-                    });
-                this.saveButton = button.buttonEl;
-            });
-
-        this.toggle(
-            "disablePluginStyles",
-            i18n.suppressPluginStyles.name,
-            i18n.suppressPluginStyles.desc,
-        );
-
-        // ── Markers ──────────────────────────────────────────────────────────
-        new Setting(this.containerEl)
-            .setHeading()
-            .setName(i18n.markersSection.name);
-        this.containerEl.createEl("p", { text: i18n.markersSection.desc });
-
-        this.toggle(
-            "showSourceOnlyWhitespace",
-            i18n.showSourceOnlyWhitespace.name,
-            i18n.showSourceOnlyWhitespace.desc,
-        );
-        this.toggle(
-            "showLineEndings",
-            i18n.showLineEndings.name,
-            i18n.showLineEndings.desc,
-        );
-        this.toggle(
-            "showHardLineBreaks",
-            i18n.showHardLineBreaks.name,
-            i18n.showHardLineBreaks.desc,
-        );
-        this.toggle(
-            "showUnicodeWhitespace",
-            i18n.showUnicodeWhitespace.name,
-            i18n.showUnicodeWhitespace.desc,
-        );
-
-        // ── Structural ────────────────────────────────────────────────────────
-        new Setting(this.containerEl)
-            .setHeading()
-            .setName(i18n.structuralSection.name);
-
-        this.toggle(
-            "outlineListMarkers",
-            i18n.highlightListMarkers.name,
-            i18n.highlightListMarkers.desc,
-        );
-
-        // ── Space dot contexts ────────────────────────────────────────────────
-        new Setting(this.containerEl)
-            .setHeading()
-            .setName(i18n.spaceContextsSection.name);
-        this.containerEl.createEl("p", {
-            text: i18n.spaceContextsSection.desc,
-        });
-
-        this.toggle(
-            "showFrontmatterWhitespace",
-            i18n.showFrontmatterWhitespace.name,
-            i18n.showFrontmatterWhitespace.desc,
-        );
-        this.toggle(
-            "showTableWhitespace",
-            i18n.showTableWhitespace.name,
-            i18n.showTableWhitespace.desc,
-        );
-        this.toggle(
-            "showCodeblockWhitespace",
-            i18n.showCodeBlockWhitespace.name,
-            i18n.showCodeBlockWhitespace.desc,
-        );
-        this.toggle(
-            "showAllCodeblockWhitespace",
-            i18n.showAllCodeBlockWhitespace.name,
-            i18n.showAllCodeBlockWhitespace.desc,
-        );
-        this.toggle(
-            "showAllWhitespace",
-            i18n.showAllWhitespace.name,
-            i18n.showAllWhitespace.desc,
-        );
-    }
-
-    /** Save on exit */
-    hide(): void {
-        void this.save();
+            {
+                type: "group",
+                heading: i18n.spaceContextsSection.name,
+                items: [
+                    {
+                        name: "",
+                        searchable: false,
+                        render: (setting: Setting) => {
+                            setting.descEl.setText(
+                                i18n.spaceContextsSection.desc,
+                            );
+                        },
+                    },
+                    {
+                        name: i18n.showFrontmatterWhitespace.name,
+                        desc: i18n.showFrontmatterWhitespace.desc,
+                        control: {
+                            type: "toggle",
+                            key: "showFrontmatterWhitespace",
+                        },
+                    },
+                    {
+                        name: i18n.showTableWhitespace.name,
+                        desc: i18n.showTableWhitespace.desc,
+                        control: {
+                            type: "toggle",
+                            key: "showTableWhitespace",
+                        },
+                    },
+                    {
+                        name: i18n.showCodeBlockWhitespace.name,
+                        desc: i18n.showCodeBlockWhitespace.desc,
+                        control: {
+                            type: "toggle",
+                            key: "showCodeblockWhitespace",
+                        },
+                    },
+                    {
+                        name: i18n.showAllCodeBlockWhitespace.name,
+                        desc: i18n.showAllCodeBlockWhitespace.desc,
+                        control: {
+                            type: "toggle",
+                            key: "showAllCodeblockWhitespace",
+                        },
+                    },
+                    {
+                        name: i18n.showAllWhitespace.name,
+                        desc: i18n.showAllWhitespace.desc,
+                        control: {
+                            type: "toggle",
+                            key: "showAllWhitespace",
+                        },
+                    },
+                ],
+            },
+        ];
     }
 }

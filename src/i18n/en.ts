@@ -1,15 +1,4 @@
 export const en = {
-    manifestName: "Show Whitespace",
-
-    saveSettings: {
-        name: "Save settings",
-        resetBtn: {
-            tooltip: "Reset to previously saved (or generated) values",
-        },
-        saveBtn: {
-            tooltip: "Save current values",
-        },
-    },
     suppressPluginStyles: {
         name: "Suppress plugin styles",
         desc:
@@ -43,28 +32,28 @@ export const en = {
     },
 
     spaceContextsSection: {
-        name: "Space dot contexts",
+        name: "Individual spaces",
         desc: "Show a dot for each space character within the selected contexts. All toggles are independent.",
     },
     showFrontmatterWhitespace: {
         name: "Frontmatter",
-        desc: "Show space dots in YAML frontmatter (properties).",
+        desc: "Show dots for spaces in YAML frontmatter (properties).",
     },
     showTableWhitespace: {
         name: "Tables",
-        desc: "Show space dots in table cells.",
+        desc: "Show dots for spaces in table cells.",
     },
     showCodeBlockWhitespace: {
         name: "Code blocks (leading/trailing only)",
-        desc: "Show space dots for leading and trailing spaces in code blocks.",
+        desc: "Show dots for leading and trailing spaces in code blocks.",
     },
     showAllCodeBlockWhitespace: {
         name: "Code blocks (all spaces)",
-        desc: "Show space dots for every space in code blocks, making them look more like a code editor.",
+        desc: "Show dots for every space in code blocks, making them look more like a code editor.",
     },
     showAllWhitespace: {
         name: "Everywhere",
-        desc: "Show space dots for all spaces in the document, including between words.",
+        desc: "Show dots for all spaces in the document, including between words.",
     },
     showSourceOnlyWhitespace: {
         name: "Source mode only",
