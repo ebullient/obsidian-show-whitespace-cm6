@@ -31,32 +31,45 @@ const tabDeco = Decoration.mark({ class: "cm-highlightTab" });
 const trailingDeco = Decoration.mark({ class: "cm-trailingSpace" });
 const unicodeSpaceDeco = Decoration.mark({ class: "swcm6-unicode-space" });
 
-const whitespaceMatcher = new MatchDecorator({
-    regexp: /\t| /g,
-    decoration: (match) => (match[0] === "\t" ? tabDeco : spaceDeco),
-    boundary: /\S/,
-});
+function makeWhitespaceMatcher(): MatchDecorator {
+    return new MatchDecorator({
+        regexp: /\t| /g,
+        decoration: (match) => (match[0] === "\t" ? tabDeco : spaceDeco),
+        boundary: /\S/,
+    });
+}
 
-const trailingMatcher = new MatchDecorator({
-    regexp: /\s+$/g,
-    decoration: trailingDeco,
-});
+function makeTrailingMatcher(): MatchDecorator {
+    return new MatchDecorator({
+        regexp: /\s+$/g,
+        decoration: trailingDeco,
+    });
+}
 
-const unicodeMatcher = new MatchDecorator({
-    regexp: UNICODE_SPACE_RE,
-    decoration: unicodeSpaceDeco,
-});
+function makeUnicodeMatcher(): MatchDecorator {
+    return new MatchDecorator({
+        regexp: UNICODE_SPACE_RE,
+        decoration: unicodeSpaceDeco,
+    });
+}
 
-/** Wraps a MatchDecorator in a ViewPlugin that keeps its decorations incrementally updated. */
-function matcher(decorator: MatchDecorator): Extension {
+/**
+ * Wraps a MatchDecorator factory in a ViewPlugin that keeps its decorations
+ * incrementally updated. Each ViewPlugin instance (one per editor pane) gets
+ * its own MatchDecorator/RegExp, since MatchDecorator mutates the regexp's
+ * `lastIndex` and sharing one across panes corrupts match positions.
+ */
+function matcher(makeDecorator: () => MatchDecorator): Extension {
     return ViewPlugin.fromClass(
         class {
+            decorator: MatchDecorator;
             decorations: DecorationSet;
             constructor(view: EditorView) {
-                this.decorations = decorator.createDeco(view);
+                this.decorator = makeDecorator();
+                this.decorations = this.decorator.createDeco(view);
             }
             update(update: ViewUpdate): void {
-                this.decorations = decorator.updateDeco(
+                this.decorations = this.decorator.updateDeco(
                     update,
                     this.decorations,
                 );
@@ -197,10 +210,13 @@ export function markersExtension(settings: SWSettings): Extension[] {
 
     const extensions: Extension[] = [];
     if (showSpaces) {
-        extensions.push(matcher(whitespaceMatcher), matcher(trailingMatcher));
+        extensions.push(
+            matcher(makeWhitespaceMatcher),
+            matcher(makeTrailingMatcher),
+        );
     }
     if (showUnicodeWhitespace) {
-        extensions.push(matcher(unicodeMatcher));
+        extensions.push(matcher(makeUnicodeMatcher));
     }
     if (showLineEndings || showHardLineBreaks) {
         extensions.push(widgetPlugin(showLineEndings, showHardLineBreaks));
