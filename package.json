@@ -42,8 +42,6 @@
     "typescript": "6.0.3"
   },
   "dependencies": {
-    "@codemirror/language": "https://github.com/lishid/cm-language",
-    "@codemirror/state": "6.7.1",
     "@codemirror/view": "6.38.6"
   },
   "auto-changelog": {
