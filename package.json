@@ -27,7 +27,7 @@
   "repository": "github.com:ebullient/obsidian-show-whitespace-cm6",
   "license": "AGPL-3.0-only",
   "devDependencies": {
-    "@biomejs/biome": "2.5.6",
+    "@biomejs/biome": "2.5.10",
     "@types/codemirror": "5.60.18",
     "@types/node": "^26.2.0",
     "@typescript-eslint/parser": "^8.67.0",
