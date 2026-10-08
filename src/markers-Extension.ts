@@ -122,11 +122,18 @@ function buildWidgetDecorations(
         const activeLineNum = view.state.doc.lineAt(head).number;
 
         const widgets: Range<Decoration>[] = [];
+        const seenLines = new Set<number>();
         for (const { from, to } of view.visibleRanges) {
             let pos = Math.max(0, Math.min(from, docLength));
             const rangeEnd = Math.min(to, docLength);
             while (pos <= rangeEnd) {
                 const line = view.state.doc.lineAt(pos);
+                if (seenLines.has(line.number)) {
+                    if (line.to >= rangeEnd) break;
+                    pos = line.to + 1;
+                    continue;
+                }
+                seenLines.add(line.number);
 
                 // Line-end markers: skip the cursor line to avoid crowding the
                 // insertion point.
