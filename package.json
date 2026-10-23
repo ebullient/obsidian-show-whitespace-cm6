@@ -41,7 +41,7 @@
     "typescript": "6.0.3"
   },
   "dependencies": {
-    "@codemirror/view": "6.38.6"
+    "@codemirror/view": "6.43.13"
   },
   "overrides": {
     "moment": "2.31.0"
