@@ -1,20 +1,32 @@
 .theme-dark {
   --swcm6-whitespace-color: var(--color-base-40);
   --swcm6-outline-list-markers-color: rgba(var(--mono-rgb-100), 0.05);
-  --swcm6-tab-bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="20"><path stroke="%23666" stroke-width="1" fill="none" d="M1 10H196L190 5M190 15L196 10M197 4L197 16"/></svg>');
+  --swcm6-tab-bg-image: url(
+    'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="20"><path stroke="%23666" stroke-width="1" fill="none" d="M1 10H196L190 5M190 15L196 10M197 4L197 16"/></svg>'
+  );
 }
 
 .theme-light {
   --swcm6-whitespace-color: var(--color-base-35);
   --swcm6-outline-list-markers-color: rgba(var(--mono-rgb-100), 0.03);
-  --swcm6-tab-bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="20"><path stroke="%23aaa" stroke-width="1" fill="none" d="M1 10H196L190 5M190 15L196 10M197 4L197 16"/></svg>');
+  --swcm6-tab-bg-image: url(
+    'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="20"><path stroke="%23aaa" stroke-width="1" fill="none" d="M1 10H196L190 5M190 15L196 10M197 4L197 16"/></svg>'
+  );
 }
 
 body:not(.swcm6-nix-plugin-styles) {
-  --line-end: '¬';
-  --hard-break: '↲';
-  --swcm6-space-bg-image: radial-gradient(circle at 50% 55%, var(--swcm6-whitespace-color) 10%, transparent 2%);
-  --swcm6-unicode-space-bg-image: radial-gradient(circle at 50% 55%, var(--swcm6-whitespace-color) 10%, transparent 2%);
+  --line-end: "¬";
+  --hard-break: "↲";
+  --swcm6-space-bg-image: radial-gradient(
+    circle at 50% 55%,
+    var(--swcm6-whitespace-color) 10%,
+    transparent 2%
+  );
+  --swcm6-unicode-space-bg-image: radial-gradient(
+    circle at 50% 55%,
+    var(--swcm6-whitespace-color) 10%,
+    transparent 2%
+  );
 
   @mixin show-whitespace {
     .cm-highlightSpace {
@@ -34,12 +46,16 @@ body:not(.swcm6-nix-plugin-styles) {
   // Second selector reapplies this in Live Preview when swcm6-show-source-only-whitespace
   // is on, outranking every &.swcm6-show-* toggle below.
   .cm-highlightSpace,
-  &.swcm6-show-source-only-whitespace .markdown-source-view.mod-cm6.is-live-preview .cm-highlightSpace {
+  &.swcm6-show-source-only-whitespace
+    .markdown-source-view.mod-cm6.is-live-preview
+    .cm-highlightSpace {
     background-image: none !important;
   }
 
   .cm-highlightTab,
-  &.swcm6-show-source-only-whitespace .markdown-source-view.mod-cm6.is-live-preview .cm-highlightTab {
+  &.swcm6-show-source-only-whitespace
+    .markdown-source-view.mod-cm6.is-live-preview
+    .cm-highlightTab {
     background-image: none !important;
   }
 
@@ -92,7 +108,8 @@ body:not(.swcm6-nix-plugin-styles) {
   }
 
   // Source-mode-only gate: hide trailing-space highlighting in Live Preview.
-  &.swcm6-show-source-only-whitespace .markdown-source-view.mod-cm6.is-live-preview {
+  &.swcm6-show-source-only-whitespace
+    .markdown-source-view.mod-cm6.is-live-preview {
     .cm-trailingSpace {
       background-color: transparent;
     }
@@ -100,11 +117,11 @@ body:not(.swcm6-nix-plugin-styles) {
 
   // Source-mode-only gate: hide whitespace markers below in Live Preview.
   &:not(.swcm6-show-source-only-whitespace),
-  &.swcm6-show-source-only-whitespace .markdown-source-view.mod-cm6:not(.is-live-preview) {
+  &.swcm6-show-source-only-whitespace
+    .markdown-source-view.mod-cm6:not(.is-live-preview) {
     // Space allocated for list markers
     &.swcm6-outline-list-markers {
       .markdown-source-view.mod-cm6 .cm-line {
-
         .cm-formatting-list-ul,
         .cm-formatting-list-ol,
         .cm-formatting-task,
